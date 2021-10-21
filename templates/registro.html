@@ -295,7 +295,15 @@
             });
 
             request.done(function(res) {
-                window.location.replace("/");
+                if (res == 'Ya existe un usuario') {
+                    alert('Ya existe un usuario con ese nombre');
+                } else if (res == 'Registro Exitoso') {
+                    window.location.replace("/");
+                } else if (res == 'Datos invalidos') {
+                    alert('Los datos no se enviaron correctamente, intentelo de nuevo');
+                } else {
+                    alert('Se realizó una petición incorrecta')
+                }
             });
 
             request.fail(function(jqXHR, textStatus) {
