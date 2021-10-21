@@ -1,0 +1,71 @@
+.carousel-control.right {
+    background-image: linear-gradient(to right,rgba(0,0,0,.0001) 0,rgba(0,0,0,.0) 100%);
+}
+
+.carousel-control.left {
+    background-image: linear-gradient(to right,rgba(0,0,0,.0001) 0,rgba(0,0,0,.0) 100%);
+}
+
+.s-precio
+{
+    font-size: 18px;
+    display: block;
+}
+
+.s-producto-comentarios
+{
+    color: #0f98f9;
+    font-size: 0.9em;
+}
+
+
+.clasificacion{
+    direction: rtl; /*right to left */
+    unicode-bidi: bidi-override; /*bidi de bidireccional */
+    text-align: left;
+    margin: 0;
+}
+.clasificacion label{ color:grey; font-size: 25px; margin: 0;}
+.clasificacion input[type = "radio"]{ display:none;}
+.clasificacion label:hover{color:orange;}
+.clasificacion label:hover ~ label{color:orange;}
+.clasificacion input[type = "radio"]:checked ~ label{color:orange;} 
+.clasificacion .votado{color:rgb(253, 200, 100);}
+
+.carousel-control {  color: #efefef; }
+
+.filtros{
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.carousel{margin-bottom: 80px;}
+
+
+.crear-producto{
+    padding-left: 75px !important;
+    padding-bottom: 20px !important;
+    color: #0f98f9;
+}
+.btn-del-edit-prod{
+    margin-top: 20px;
+}
+
+.btn-editar
+{
+   color: #0f98f9; 
+}
+
+.btn-eliminar{
+   color: #ff4545dd;
+}
+
+.heart{
+    color: #9c9a9add;    
+    display: block;
+    cursor: pointer;
+}
+
+.heart-on{
+    color: red;
+}

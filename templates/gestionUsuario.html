@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="css/slick-theme.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+        
+        .global-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+        
+        form {
+            padding-top: 10px;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        .card-title {
+            font-weight: 300;
+        }
+        
+        .btn {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .login-form {
+            width: 730px;
+            margin: 20px;
+            border: 2px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 20px;
+            background: #FFF;
+        }
+        
+        .sign-up {
+            text-align: center;
+            padding: 20px 0 0;
+        }
+        
+        .alert {
+            margin-bottom: -30px;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="global-container">
+        <div class="card login-form">
+            <div class="card-body">
+                <h2 class="text-center">Crear una cuenta</h2>
+                <div class="card-text">
+                    <form action="/examples/actions/confirmation.php" method="post">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tipo de identificación:</label>
+                                    <select class="form-control" id="tipoId">
+                                        <option value="CC">CC</option>
+                                        <option value="TI">TI</option>
+                                        <option value="CE">CE</option>
+                                        <option value="PA">PA</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Número de identificación:</label>
+                                    <input type="text" class="form-control" id="numId">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Primer nombre:</label>
+                                    <input type="text" class="form-control" id="primerNombre">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Segundo nombre:</label>
+                                    <input type="text" class="form-control" id="segundoNombre">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Primer apellido:</label>
+                                    <input type="text" class="form-control" id="primerApellido">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Segundo apellido:</label>
+                                    <input type="text" class="form-control" id="segundoApellido">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Correo electrónico:</label>
+                            <input type="email" class="form-control" id="correo">
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección:</label>
+                            <input type="text" class="form-control" id="direccion">
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Nombre de usuario:</label>
+                                    <input type="text" class="form-control" id="nombreUsuario">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Teléfono:</label>
+                                    <input type="text" class="form-control" id="telefono">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Contraseña:</label>
+                                    <input type="password" class="form-control" id="contrasena">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Repita su contraseña:</label>
+                                    <input type="password" class="form-control" id="repetirContrasena">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Rol:</label>
+                                    <select class="form-control" id="tipoId">
+                                        <option value="Administrador">Administrador</option>
+                                        <option value="Cliente">Cliente</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="index.html" class="secondary-btn" id="guardarUsuario" style="margin-right: 10px;">Guardar</a>
+                            <a href="#" class="primary-btn" id="eliminarUsuario" style="margin-right: 10px;">Eliminar</a>
+                            <a href="#" class="default-btn" id="limpiarUsuario">Limpiar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery Plugins -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/jquery.zoom.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
