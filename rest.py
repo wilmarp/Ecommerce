@@ -16,17 +16,18 @@ def InsertUsuario(con, entities, rol):
     cursorObj.execute('INSERT INTO usuario(usuario, password, primer_nombre, segundo_nombre, tipo_id, no_id, direccion, telefono, correo, estado) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', entities)
     usuario = cursorObj.lastrowid
     cursorObj.execute('INSERT INTO rol_usuario(id_rol, id_usuario) VALUES(?, ?)', (rol,usuario))
+    session['usuario_id'] = usuario
     con.commit()
 
-def usuarioByUsuario(con, usuario):
+def buscarUsuario(con, usuario):
     cursorObj = con.cursor()
-    cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', usuario)
-    res = cursorObj.fetchall()
+    cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
+    res = cursorObj.fetchone()
     return res
 
 def Login(con, usuario, contrasena):
     cursorObj = con.cursor()
-    cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = "wilmar.mendoza"')
+    cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
     res = cursorObj.fetchone()
     if(check_password_hash(res[2],contrasena)):
         session['usuario_id'] = res[0]
@@ -118,12 +119,16 @@ def registrarUsuario():
         telefono = request.json['telefono']
         contrasena = generate_password_hash(request.json['contrasena'])
         rol = request.json['rol']
-        if tipo_id and num_id and primer_nombre and primer_apellido and correo and direccion and usuario and telefono and contrasena and rol:
-            informacion = (usuario, contrasena, primer_nombre, primer_apellido, tipo_id, num_id, direccion, telefono, correo, 1)
-            InsertUsuario(con,informacion,rol)
-            return 'Registro Exitoso'
+        existeUsuario = buscarUsuario(con,usuario)
+        if existeUsuario[1]:
+            return 'Ya existe un usuario'
         else:
-            return 'Datos invalidos'
+            if tipo_id and num_id and primer_nombre and primer_apellido and correo and direccion and usuario and telefono and contrasena and rol:
+                informacion = (usuario, contrasena, primer_nombre, primer_apellido, tipo_id, num_id, direccion, telefono, correo, 1)
+                InsertUsuario(con,informacion,rol)
+                return 'Registro Exitoso'
+            else:
+                return 'Datos invalidos'
     else:
         return 'Peticion incorrecta'
     
@@ -141,7 +146,7 @@ def loguearUsuario():
         usuario = request.json['usuario']
         clave = request.json['clave']
         if usuario and clave:
-            res = Login(con,(usuario),clave)
+            res = Login(con,usuario,clave)
             if res == 'puede ingresar':
                 return 'Autorizado'
             else:
@@ -156,7 +161,7 @@ def logout():
     if "usuario_id" in session:
         session.pop('usuario_id')
         return redirect(url_for("login"))
-    return 'Sesion finalizada'
+    return redirect(url_for("login"))
 
 @app.route('/gestionUsuario', methods=['GET'])
 @app.route('/gestionUsuario/', methods=['GET'])
