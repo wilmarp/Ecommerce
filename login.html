@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="css/slick-theme.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+        
+        .global-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+        
+        form {
+            padding-top: 10px;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        .card-title {
+            font-weight: 300;
+        }
+        
+        .btn {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .login-form {
+            width: 330px;
+            margin: 20px;
+            border: 2px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 20px;
+            background: #FFF;
+        }
+        
+        .sign-up {
+            text-align: center;
+            padding: 20px 0 0;
+        }
+        
+        .alert {
+            margin-bottom: -30px;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="global-container">
+        <div class="card login-form">
+            <div class="card-body">
+                <a href="#" class="logo">
+                    <img src="./img/logo.png" alt="" style="display: block;
+                    margin: auto;
+                    background: #000;">
+                </a>
+                <div class="card-text">
+                    <!--
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">Incorrect username or password.</div> -->
+                    <form>
+                        <!-- to error: add class "has-danger" -->
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <a href="#" style="float:right;font-size:12px;">¿Ovidaste tu contraseña?</a>
+                            <input type="password" class="form-control form-control-sm">
+                        </div>
+                        <a href="index.html" class="primary-btn" style="display: block;margin: auto;">Ingresar</a>
+
+                        <div class="sign-up">
+                            ¿No tienes una cuenta? <a href="registro.html">Registrate aquí</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
