@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="../static/css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="../static/css/slick-theme.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="../static/css/style.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+        
+        .global-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+        
+        form {
+            padding-top: 10px;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        .card-title {
+            font-weight: 300;
+        }
+        
+        .btn {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .login-form {
+            width: 330px;
+            margin: 20px;
+            border: 2px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 20px;
+            background: #FFF;
+        }
+        
+        .sign-up {
+            text-align: center;
+            padding: 20px 0 0;
+        }
+        
+        .alert {
+            margin-bottom: -30px;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="global-container">
+        <div class="card login-form">
+            <div class="card-body">
+                <a href="#" class="logo">
+                    <img src="../static/img/logo.png" alt="" style="display: block;
+                    margin: auto;
+                    background: #000;">
+                </a>
+                <div class="card-text">
+                    <!--
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">Incorrect username or password.</div> -->
+                    <form id="loginForm">
+                        <!-- to error: add class "has-danger" -->
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" class="form-control form-control-sm" name="usuario" id="usuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <a href="#" style="float:right;font-size:12px;">¿Ovidaste tu contraseña?</a>
+                            <input type="password" class="form-control form-control-sm" name="contrasena" id="clave">
+                        </div>
+                        <button type="submit" class="primary-btn" style="width: 100%">Ingresar</button>
+
+                        <div class="sign-up">
+                            ¿No tienes una cuenta? <a href="/registro">Registrate aquí</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- jQuery Plugins -->
+<script src='{{url_for("static", filename="js/jquery.min.js")}}'></script>
+<script src='{{url_for("static", filename="js/bootstrap.min.js")}}'></script>
+<script src='{{url_for("static", filename="js/main.js")}}'></script>
+<script src='{{url_for("static", filename="js/jquery.validate.min.js")}}'></script>
+<script>
+    $("#loginForm").validate({
+        rules: {
+            usuario: {
+                required: true,
+                minlength: 3
+            },
+            contrasena: {
+                required: true,
+                minlength: 8
+            },
+        },
+        messages: {
+            usuario: {
+                required: "Por favor ingrese un usuario.",
+                minlength: "El usuario debe tener minimo 3 caracteres"
+            },
+            contrasena: {
+                required: "Por favor ingrese una contraseña.",
+                minlength: "La contraseña debe tener minimo 8 caracteres"
+            }
+        },
+        submitHandler: function(form) {
+            // do other things for a valid form
+            event.preventDefault();
+            var usuario = $('#usuario').val();
+            var clave = $('#clave').val();
+            var request = $.ajax({
+                url: "../loguearUsuario/",
+                method: "POST",
+                data: JSON.stringify({
+                    usuario: usuario,
+                    clave: clave
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            request.done(function(res) {
+                if (res == "Autorizado") {
+                    localStorage.autenticado = true;
+                    window.location.replace("/");
+                } else if (res == 'No autorizado') {
+                    localStorage.autenticado = false;
+                    alert("La combinación de usuario y contraseña no coinciden.");
+                } else if (res == 'Datos invalidos') {
+                    alert("Los datos ingresados no fueron ingresados correctamente, por favor vuelva a intentarlo.");
+                } else {
+                    alert("Se realizó una petición incorrecta para ingresar al sistema.");
+                }
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                alert('Ocurrió un error inesperado, por favor intentelo de nuevo más tarde.')
+            });
+        }
+    });
+</script>
+
+</html>

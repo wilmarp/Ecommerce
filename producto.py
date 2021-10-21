@@ -1,4 +1,5 @@
-producto = [
+def getProducto():
+    return [
     {
         'nombre': 'CONCEPT 3 BY SKECHERS ZAPATILLAS', 
         'calificacion': 4, 
