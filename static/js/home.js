@@ -26,7 +26,7 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newProducto =
-                        '<div id="carousel-example-generic' + i + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
+                        '<a href="/producto"><div id="carousel-example-generic' + i + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
                         '   <div style="height:60px;"><h4>' + data[i].Nombre + '</h4></div>' +
                         '   <span class="heart">Agregar a la lista de deseos' +
                         '   <i class="' + (data[i].Deseado == "true" ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
@@ -75,7 +75,7 @@ servicios = {
                         '       <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditar">Editar</button>' +
                         '       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminar">Eliminar</button>' +
                         '   </div>' +
-                        '</div>';
+                        '</div></a>';
 
                     $("#list-productos").append(newProducto);
                     if (data[i].Deseado == "true")

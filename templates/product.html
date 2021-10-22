@@ -55,7 +55,7 @@
                     <!-- LOGO -->
                     <div class="col-md-3">
                         <div class="header-logo">
-                            <a href="#" class="logo">
+                            <a href="/" class="logo">
                                 <img src="../static/img/logo.png" alt="">
                             </a>
                         </div>
@@ -420,9 +420,9 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <form class="review-form">
-                        <textarea class="input" placeholder="Escribe aquí tu comentario" id="comentario"></textarea>
-                        <button class="primary-btn" id="Comentar">Comentar</button>
+                    <form id="formComentar" class="review-form">
+                        <textarea class="input" placeholder="Escribe aquí tu comentario" name="comentario" id="comentario"></textarea>
+                        <button type="submit" class="primary-btn" id="Comentar" style="display: block;margin-left: auto;">Comentar</button>
                     </form>
                 </div>
             </div>
@@ -437,11 +437,12 @@
     <script src="../static/js/nouislider.min.js"></script>
     <script src="../static/js/jquery.zoom.min.js"></script>
     <script src="../static/js/main.js"></script>
+    <script src="../static/js/jquery.validate.min.js"></script>
     <script>
         $(document).ready(function() {
 
             var request = $.ajax({
-                url: "http://127.0.0.1:8080/obtenerProducto/",
+                url: "../obtenerProducto/",
                 method: "GET",
                 dataType: "json",
                 headers: {
@@ -511,6 +512,45 @@
 
             request.fail(function(jqXHR, textStatus) {
                 console.log('Fail');
+            });
+
+            $("#formComentar").validate({
+                rules: {
+                    comentario: {
+                        required: true,
+                        minlength: 10
+                    }
+                },
+                messages: {
+                    comentario: {
+                        required: "Por favor ingrese el comentario.",
+                        minlength: "El comentario debe tener minimo 10 caracteres"
+                    }
+                },
+                submitHandler: function(form) {
+                    //Comentar
+                    $('#Comentar').on('click', function(e) {
+                        e.preventDefault();
+                        if ($('#Comentar').text() == 'Comentar') {
+                            $('.reviews').append('<li><div class="review-heading"><img class="img" src="../static/img/user.png" alt=""><h5 class="name">Jaime</h5><p class="date">10 OCT 2021, 7:00 AM</p></div><div class="review-body"><p>' + $('#comentario').val() + '</p></div></li>');
+                            $('#comentarioModal').modal('hide');
+
+                        } else {
+                            $('#texto').text($('#comentario').val());
+                            $('#comentarioModal').modal('hide');
+                            $('#comentario').val('');
+                            $('#Comentar').text('Comentar');
+
+                        }
+                    });
+
+                    //Editar comentario
+                    $('#editar').on('click', function(e) {
+                        e.preventDefault();
+                        $('#comentario').val($('#texto').text());
+                        $('#Comentar').text('Editar');
+                    });
+                }
             });
         });
     </script>
