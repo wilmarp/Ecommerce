@@ -19,12 +19,6 @@ def InsertUsuario(con, entities, rol):
     session['usuario_id'] = usuario
     con.commit()
 
-def buscarUsuario(con, usuario):
-    cursorObj = con.cursor()
-    cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
-    res = cursorObj.fetchone()
-    return res
-
 def Login(con, usuario, contrasena):
     cursorObj = con.cursor()
     cursorObj.execute('SELECT id, usuario, password, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
@@ -36,6 +30,12 @@ def Login(con, usuario, contrasena):
         return "puede ingresar"
     else:
         return "no puede ingresar"
+
+def obtenerUsuario(con, usuario):
+    cursorObj = con.cursor()
+    cursorObj.execute('SELECT id, usuario, password, primer_nombre, segundo_nombre, tipo_id, no_id, direccion, telefono, correo, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
+    res = cursorObj.fetchone()
+    return res
 
 userSuperAdmin = 1
 userAdmin = 2
@@ -157,12 +157,26 @@ def loguearUsuario():
     else:
         return 'Peticion incorrecta'
 
+@app.route('/logout', methods=['GET'])
 @app.route('/logout/', methods=['GET'])
 def logout():
     if "usuario_id" in session:
         session.pop('usuario_id')
         return redirect(url_for("login"))
     return redirect(url_for("login"))
+
+@app.route('/buscarUsuario', methods=['GET','POST'])
+@app.route('/buscarUsuario/', methods=['GET','POST'])
+def buscarUsuario():
+    if request.method == 'POST':
+        usuario = request.json['usuario']
+        print(usuario)
+        if usuario:
+            res = obtenerUsuario(con,usuario)
+            if res:
+                return jsonify(res)
+            return 'No existe'
+
 
 @app.route('/gestionUsuario', methods=['GET'])
 @app.route('/gestionUsuario/', methods=['GET'])
