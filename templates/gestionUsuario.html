@@ -7,17 +7,17 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css" />
 
     <!-- Slick -->
-    <link type="text/css" rel="stylesheet" href="css/slick.css" />
-    <link type="text/css" rel="stylesheet" href="css/slick-theme.css" />
+    <link type="text/css" rel="stylesheet" href="../static/css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="../static/css/slick-theme.css" />
 
     <!-- Font Awesome Icon -->
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
 
     <!-- Custom stlylesheet -->
-    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link type="text/css" rel="stylesheet" href="../static/css/style.css" />
     <style>
         html,
         body {
@@ -74,12 +74,12 @@
             <div class="card-body">
                 <h2 class="text-center">Crear una cuenta</h2>
                 <div class="card-text">
-                    <form action="/examples/actions/confirmation.php" method="post">
+                    <form id="registroForm" method="post">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Tipo de identificación:</label>
-                                    <select class="form-control" id="tipoId">
+                                    <select class="form-control" id="tipoId" name="tipoid">
                                         <option value="CC">CC</option>
                                         <option value="TI">TI</option>
                                         <option value="CE">CE</option>
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label>Número de identificación:</label>
-                                    <input type="text" class="form-control" id="numId">
+                                    <input type="text" class="form-control" id="numId" name="numid">
                                 </div>
                             </div>
                         </div>
@@ -96,11 +96,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Primer nombre:</label>
-                                    <input type="text" class="form-control" id="primerNombre">
+                                    <input type="text" class="form-control" id="primerNombre" name="primernombre">
                                 </div>
                                 <div class="col-md-6">
                                     <label>Segundo nombre:</label>
-                                    <input type="text" class="form-control" id="segundoNombre">
+                                    <input type="text" class="form-control" id="segundoNombre" name="segundonombre">
                                 </div>
                             </div>
                         </div>
@@ -108,31 +108,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Primer apellido:</label>
-                                    <input type="text" class="form-control" id="primerApellido">
+                                    <input type="text" class="form-control" id="primerApellido" name="primerapellido">
                                 </div>
                                 <div class="col-md-6">
                                     <label>Segundo apellido:</label>
-                                    <input type="text" class="form-control" id="segundoApellido">
+                                    <input type="text" class="form-control" id="segundoApellido" name="segundoapellido">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Correo electrónico:</label>
-                            <input type="email" class="form-control" id="correo">
+                            <input type="email" class="form-control" id="correo" name="correo">
                         </div>
                         <div class="form-group">
                             <label>Dirección:</label>
-                            <input type="text" class="form-control" id="direccion">
+                            <input type="text" class="form-control" id="direccion" name="direccion">
                         </div>
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Nombre de usuario:</label>
-                                    <input type="text" class="form-control" id="nombreUsuario">
+                                    <input type="text" class="form-control" id="nombreUsuario" name="usuario">
                                 </div>
                                 <div class="col-md-6">
                                     <label>Teléfono:</label>
-                                    <input type="text" class="form-control" id="telefono">
+                                    <input type="text" class="form-control" id="telefono" name="telefono">
                                 </div>
                             </div>
                         </div>
@@ -140,11 +140,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Contraseña:</label>
-                                    <input type="password" class="form-control" id="contrasena">
+                                    <input type="password" class="form-control" id="contrasena" name="contrasena">
                                 </div>
                                 <div class="col-md-6">
                                     <label>Repita su contraseña:</label>
-                                    <input type="password" class="form-control" id="repetirContrasena">
+                                    <input type="password" class="form-control" id="repetirContrasena" name="repetircontrasena">
                                 </div>
                             </div>
                         </div>
@@ -152,9 +152,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Rol:</label>
-                                    <select class="form-control" id="tipoId">
-                                        <option value="Administrador">Administrador</option>
-                                        <option value="Cliente">Cliente</option>
+                                    <select class="form-control" id="Rol" name="rol">
+                                        <option value="2">Administrador</option>
+                                        <option value="3">Cliente</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -162,9 +162,9 @@
                             </div>
                         </div>
                         <div class="text-center">
-                            <a href="index.html" class="secondary-btn" id="guardarUsuario" style="margin-right: 10px;">Guardar</a>
-                            <a href="#" class="primary-btn" id="eliminarUsuario" style="margin-right: 10px;">Eliminar</a>
-                            <a href="#" class="default-btn" id="limpiarUsuario">Limpiar</a>
+                            <button type="submit" class="secondary-btn" id="guardarUsuario" style="margin-right: 10px;">Guardar</button>
+                            <button class="primary-btn" id="eliminarUsuario" style="margin-right: 10px;">Eliminar</button>
+                            <button class="default-btn" id="limpiarUsuario">Limpiar</button>
                         </div>
                     </form>
                 </div>
@@ -172,12 +172,188 @@
         </div>
     </div>
     <!-- jQuery Plugins -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <script src="js/nouislider.min.js"></script>
-    <script src="js/jquery.zoom.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/slick.min.js"></script>
+    <script src="../static/js/nouislider.min.js"></script>
+    <script src="../static/js/jquery.zoom.min.js"></script>
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/jquery.validate.min.js"></script>
+    <script>
+        $("#nombreUsuario").focusout(function(e) {
+            usuario = $(this).val();
+            var request = $.ajax({
+                url: "../buscarUsuario/",
+                method: "POST",
+                data: JSON.stringify({
+                    usuario: usuario
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            request.done(function(res) {
+                if (res != 'No existe') {
+                    console.log(res);
+
+                    $("#primerNombre").val(res[3]);
+                    $("#primerApellido").val(res[4]);
+                    $("#tipoId").val(res[5]);
+                    $("#numId").val(res[6]);
+                    $("#direccion").val(res[7]);
+                    $("#telefono").val(res[8]);
+                    $("#correo").val(res[9]);
+                    $("#Rol").val(res[10]);
+                }
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                console.log(jqXHR);
+            });
+        });
+
+        $("#registroForm").validate({
+            rules: {
+                tipoid: {
+                    required: true
+                },
+                numid: {
+                    required: true,
+                    minlength: 5
+                },
+                primernombre: {
+                    required: true,
+                    minlength: 3
+                },
+                primerapellido: {
+                    required: true,
+                    minlength: 3
+                },
+                correo: {
+                    required: true,
+                    email: true
+                },
+                direccion: {
+                    required: true,
+                    minlength: 3
+                },
+                usuario: {
+                    required: true,
+                    minlength: 3
+                },
+                telefono: {
+                    required: true,
+                    minlength: 5
+                },
+                contrasena: {
+                    required: true,
+                    minlength: 8
+                },
+                repetircontrasena: {
+                    equalTo: "#contrasena"
+                },
+                rol: {
+                    required: true
+                }
+            },
+            messages: {
+                tipoid: {
+                    required: "Por favor seleccione su tipo de identificación."
+                },
+                numid: {
+                    required: "Por favor ingrese su número de identificación.",
+                    minlength: "El número de identificación debe tener minimo 5 caracteres"
+                },
+                primernombre: {
+                    required: "Por favor ingrese su primer nombre.",
+                    minlength: "El primer nombre debe tener minimo 3 caracteres"
+                },
+                primerapellido: {
+                    required: "Por favor ingrese su primer apellido.",
+                    minlength: "El primer apellido debe tener minimo 3 caracteres"
+                },
+                correo: {
+                    required: "Por favor ingrese un correo electronico.",
+                    email: "Ingrese un correo valido"
+                },
+                direccion: {
+                    required: "Por favor ingrese una dirección.",
+                    minlength: "La dirección debe tener minimo 3 caracteres"
+                },
+                usuario: {
+                    required: "Por favor ingrese un usuario.",
+                    minlength: "El usuario debe tener minimo 3 caracteres"
+                },
+                telefono: {
+                    required: "Por favor ingrese su telefono.",
+                    minlength: "El telefono debe tener minimo 5 caracteres"
+                },
+                contrasena: {
+                    required: "Por favor ingrese una contraseña.",
+                    minlength: "La contraseña debe tener minimo 8 caracteres"
+                },
+                repetircontrasena: {
+                    equalTo: "Las contraseñas no coinciden"
+                },
+                rol: {
+                    required: "Por favor seleccione el rol del usuario.",
+                }
+            },
+            submitHandler: function(form) {
+                // do other things for a valid form
+                event.preventDefault();
+                var tipo_id = $("#tipo_id").val();
+                var num_id = $('#num_id').val();
+                var primer_nombre = $('#primer_nombre').val();
+                var segundo_nombre = $('#segundo_nombre').val();
+                var primer_apellido = $('#primer_apellido').val();
+                var segundo_apellido = $('#segundo_apellido').val();
+                var correo = $('#correo').val();
+                var direccion = $('#direccion').val();
+                var usuario = $('#usuario').val();
+                var telefono = $('#telefono').val();
+                var contrasena = $('#contrasena').val();
+                var request = $.ajax({
+                    url: "../registrarUsuario/",
+                    method: "POST",
+                    data: JSON.stringify({
+                        tipo_id: tipo_id,
+                        num_id: num_id,
+                        primer_nombre: primer_nombre,
+                        segundo_nombre: segundo_nombre,
+                        primer_apellido: primer_apellido,
+                        segundo_apellido: segundo_apellido,
+                        correo: correo,
+                        direccion: direccion,
+                        usuario: usuario,
+                        telefono: telefono,
+                        contrasena: contrasena,
+                        rol: 3
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                request.done(function(res) {
+                    if (res == 'Ya existe un usuario') {
+                        alert('Ya existe un usuario con ese nombre');
+                    } else if (res == 'Registro Exitoso') {
+                        window.location.replace("/");
+                    } else if (res == 'Datos invalidos') {
+                        alert('Los datos no se enviaron correctamente, intentelo de nuevo');
+                    } else {
+                        alert('Se realizó una petición incorrecta')
+                    }
+                });
+
+                request.fail(function(jqXHR, textStatus) {
+                    console.log(jqXHR);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
