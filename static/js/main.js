@@ -61,38 +61,8 @@
         $('#RepetirContrasena').val('');
     });
 
-    //Comentar
-    $('#Comentar').on('click', function(e) {
-        e.preventDefault();
-        if ($('#Comentar').text() == 'Comentar') {
-            if ($('#comentario').val().length > 10) {
-                $('.reviews').append('<li><div class="review-heading"><img class="img" src="../static/img/user.png" alt=""><h5 class="name">Jaime</h5><p class="date">10 OCT 2021, 7:00 AM</p></div><div class="review-body"><p>' + $('#comentario').val() + '</p></div></li>');
-                $('#comentarioModal').modal('hide');
-            } else {
-                alert("El campo comentario debe tener más de 10 caracteres.");
-            }
-        } else {
-            if ($('#comentario').val().length > 10) {
-                $('#texto').text($('#comentario').val());
-                $('#comentarioModal').modal('hide');
-                $('#comentario').val('');
-                $('#Comentar').text('Comentar');
-            } else {
-                alert("El campo comentario debe tener más de 10 caracteres.");
-            }
-        }
-    });
-
-    //Editar comentario
-    $('#editar').on('click', function(e) {
-        e.preventDefault();
-        $('#comentario').val($('#texto').text());
-        $('#Comentar').text('Editar');
-    });
-
     //Eliminar Comentario
     $('#eliminar').on('click', function(e) {
-        console.log($('#delete'));
         if (window.confirm("¿Realmente quieres eliminar el comentario?")) {
             $('#delete').remove();
             $('#num_comentarios').text('Comentarios (2)');

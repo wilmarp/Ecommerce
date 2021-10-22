@@ -93,9 +93,10 @@ def setUsuario():
 def getUsuario():
     return f'{session["user"]} --> {crypto(session["user"])} y password {session["pass"]} SuperAdmin: {session["sadmin"]}'
 
-@app.route('/obtenerProducto', methods=['GET','POST'])
-@app.route('/obtenerProducto/', methods=['GET','POST'])
+@app.route('/obtenerProducto', methods=['GET'])
+@app.route('/obtenerProducto/', methods=['GET'])
 def obtenerProducto():
+    print("Entra")
     return jsonify(getProducto());
 
 @app.route('/registro', methods=['GET'])
