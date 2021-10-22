@@ -75,24 +75,6 @@ def putListadeseos():
     salida["SUCCESS"] = "OK"
     return jsonify(salida)
 
-@app.route('/connect', methods=['GET','POST'])
-@app.route('/connect/', methods=['GET','POST'])
-def getConnect():
-    session["tipoUser"] = userSuperAdmin
-    session["userID"] = "1"
-    data = {"tipoUser":userSuperAdmin, "ref": crypto(session["userID"])}
-    return jsonify(data)
-
-@app.route('/setUsuario/', methods=['GET','POST'])
-def setUsuario():
-    session["user"] = "jaime"
-    session["pass"] = "asdfasdfasdfasd"
-    return ""
-
-@app.route('/getUsuario/', methods=['GET','POST'])
-def getUsuario():
-    return f'{session["user"]} --> {crypto(session["user"])} y password {session["pass"]} SuperAdmin: {session["sadmin"]}'
-
 @app.route('/obtenerProducto', methods=['GET'])
 @app.route('/obtenerProducto/', methods=['GET'])
 def obtenerProducto():
@@ -182,15 +164,6 @@ def buscarUsuario():
 @app.route('/gestionUsuario/', methods=['GET'])
 def gestionUsuario():
     return render_template('gestionUsuario.html')
-
-@app.route('/probar', methods=['GET','POST'])
-def fnProbar():    
-    if(request.method == 'POST'): 
-        txtCedula = escape( request.form['txtCedula'] )
-        txtUsuario = 'Jaime'
-        txtEmail  = 'Jaime@hotmail.com'
-        return render_template('probar.html', txtCedula=txtCedula, txtUsuario=txtUsuario, txtEmail=txtEmail)
-    return render_template('probar.html')
 
 
 if(__name__ == '__main__'):
