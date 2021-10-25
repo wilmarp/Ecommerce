@@ -2,12 +2,14 @@ import os
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from markupsafe import escape
 #import productos
+import numpy as np
 from producto import getProducto
 from productos import getProductosList, getProductosDeseadosList
 from utils import crypto
 import sqlite3
 from hashlib import sha512
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 con = sqlite3.connect('ecommerce.db', check_same_thread=False)
 
@@ -30,12 +32,59 @@ def Login(con, usuario, contrasena):
         return "puede ingresar"
     else:
         return "no puede ingresar"
+        
 
 def obtenerUsuario(con, usuario):
     cursorObj = con.cursor()
     cursorObj.execute('SELECT id, usuario, password, primer_nombre, segundo_nombre, tipo_id, no_id, direccion, telefono, correo, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
     res = cursorObj.fetchone()
     return res
+
+def getProductosImagenesDB(con, id_producto): 
+    cursorObj = con.cursor()
+    sql =   'select ruta from imagen where id_producto = ? '
+    cursorObj.execute(sql,(id_producto,))
+    return cursorObj.fetchall()
+
+def getProductosDB(con, usuario = 0):    
+    if "usuario_id" not in session:
+        usuario = 0
+    cursorObj = con.cursor()
+    sql =   'select p.Id, '
+    sql +=  '   p.Codigo,' 
+    sql +=  '   p.Nombre,' 
+    sql +=  '   case when cm.Comentarios is null then 0 else cm.Comentarios end as Comentarios, '
+    sql +=  '   case when d.id is null then 0 else 1 end as Deseado, '
+    sql +=  '   Precio, '
+    sql +=  '   case when ca.calificacion is null then 0 else ca.Calificacion  end as Calificacion '    
+    sql +=  'from producto p '
+    sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c group by id_producto) as cm on p.id = cm.id_producto '
+    sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '    
+    sql +=  'left join producto_deseado d on p.id = d.id_producto '
+    if usuario != 0:
+        sql +=  'and d.id_usuario = ?'
+        cursorObj.execute(sql,(usuario,))
+    else:
+        cursorObj.execute(sql)
+
+    data = list()
+    res = cursorObj.fetchall()
+    for row in res:
+        r = list(row)
+        images = getProductosImagenesDB(con, r[0])
+        r.append(images)
+        data.append(r)        
+
+    print(data)
+    return jsonify(data)
+
+    
+    #np.asarray(res)
+    # print(res[0][0])
+    # a = list(res[0])
+    # a.append([1,2])
+    # return jsonify(a)
+    
 
 userSuperAdmin = 1
 userAdmin = 2
@@ -60,7 +109,9 @@ def htmlDeseos():
 @app.route('/productos', methods=['GET','POST'])
 @app.route('/productos/', methods=['GET','POST'])
 def getProductos():
-    return jsonify(getProductosList())
+    res = getProductosDB(con)
+    #return jsonify(getProductosList())
+    return res
 
 @app.route('/listadeseos/', methods=['GET','POST'])
 def getProductosDeseados():    

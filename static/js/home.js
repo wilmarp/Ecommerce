@@ -27,9 +27,9 @@ servicios = {
 
                     newProducto =
                         '<a href="/producto"><div id="carousel-example-generic' + i + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
-                        '   <div style="height:60px;"><h4>' + data[i].Nombre + '</h4></div>' +
+                        '   <div style="height:60px;"><h4>' + data[i][2] + '</h4></div>' +
                         '   <span class="heart">Agregar a la lista de deseos' +
-                        '   <i class="' + (data[i].Deseado == "true" ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
+                        '   <i class="' + (data[i][4] == 1 ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
                         '   <ol class="carousel-indicators">' +
                         '       <li data-target="#carousel-example-generic' + i + '" data-slide-to="0" class="active"></li>' +
                         '       <li data-target="#carousel-example-generic' + i + '" data-slide-to="1"></li>' +
@@ -37,10 +37,10 @@ servicios = {
                         '	</ol>' +
                         '   <div class="carousel-inner" role="listbox">';
 
-                    for (var j = 0; j < data[i].Imagenes.length; j++) {
+                    for (var j = 0; j < data[i][7].length; j++) {
 
                         newProducto += '<div class="item ' + (j == 0 ? "active" : "") + '">' +
-                            '    <img src="' + data[i].Imagenes[j] + '" alt="...">' +
+                            '    <img src="' + data[i][7][j][0] + '" alt="...">' +
                             '    <div class="carousel-caption"></div>' +
                             '</div>';
                     }
@@ -58,19 +58,19 @@ servicios = {
                         '   <form>' +
                         '       <p class="clasificacion">' +
                         '           <input id="radio1" type="radio" name="estrellas" value="5">' +
-                        '           <label for="radio1">★</label>' +
+                        '           <label for="radio1" class="'+ (data[i][6] >= 5 ? "votado" : "") +'">★</label>' +
                         '           <input id="radio2" type="radio" name="estrellas" value="4">' +
-                        '           <label for="radio2">★</label>' +
+                        '           <label for="radio2" class="'+ (data[i][6] >= 4 ? "votado" : "") +'">★</label>' +
                         '           <input id="radio3" type="radio" name="estrellas" value="3">' +
-                        '           <label for="radio3" class="votado">★</label>' +
+                        '           <label for="radio3" class="'+ (data[i][6] >= 3 ? "votado" : "") +'">★</label>' +
                         '           <input id="radio4" type="radio" name="estrellas" value="2">' +
-                        '           <label for="radio4" class="votado">★</label>' +
+                        '           <label for="radio4" class="'+ (data[i][6] >= 2 ? "votado" : "") +'">★</label>' +
                         '           <input id="radio5" type="radio" name="estrellas" value="1">' +
-                        '           <label for="radio5" class="votado">★</label>' +
+                        '           <label for="radio5" class="'+ (data[i][6] >= 1 ? "votado" : "") +'">★</label>' +
                         '       </p>' +
                         '   </form>' +
-                        '   <span class="s-precio">$ ' + data[i].Precio + '</span>' +
-                        '   <a href="#" class="s-producto-comentarios">' + data[i].Comentarios + ' comentarios</a>' +
+                        '   <span class="s-precio">$ ' + parseFloat(data[i][5]).toLocaleString(window.document.documentElement.lang) + '</span>' +
+                        '   <a href="#" class="s-producto-comentarios">' + data[i][4] + ' comentarios</a>' +
                         '   <div class="btn-del-edit-prod">' +
                         '       <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditar">Editar</button>' +
                         '       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminar">Eliminar</button>' +
