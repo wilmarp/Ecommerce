@@ -212,19 +212,19 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newUsuario =
-                        '<table>'+
+                        '<table class="table">'+
                         '<tr>'+
-                        '<th>ID</th>'+
-                        '<th>Nombre</th>'+
-                        '<th>Apellido</th>'+
-                        '<th>Identificacion</th>'+
-                        '<th>Dirección</th>'+
-                        '<th>Telefono</th>'+
-                        '<th>Correo</th>'+
-                        '<th>Rol</th>'+
+                        '<th scope="col">ID</th>'+
+                        '<th scope="col">Nombre</th>'+
+                        '<th scope="col">Apellido</th>'+
+                        '<th scope="col">Identificacion</th>'+
+                        '<th scope="col">Dirección</th>'+
+                        '<th scope="col">Telefono</th>'+
+                        '<th scope="col">Correo</th>'+
+                        '<th scope="col">Rol</th>'+
                         '</tr>'+
                         '<tr>'+
-                        '<td>' + data[i].id + '</td>'
+                        '<td scope="row">' + data[i].id + '</td>'
                         '<td>' + data[i].primer_nombre + '</td>'
                         '<td>' + data[i].segundo_nombre + '</td>'
                         '<td>' + data[i].no_id + '</td>'

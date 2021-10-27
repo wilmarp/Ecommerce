@@ -103,6 +103,18 @@
         </div>
         <div class="container" id="list-usuarios">
             <!-- row -->
+			<table class="table">
+				<tr>
+					<td scope="row">00</td>
+					<td>Usuario prueba</td>
+					<td>Quemado</td>
+					<td>103844848</td>
+					<td>Cra 21 No.22 22</td>
+					<td>334 44334</td>
+					<td>otro@gmai.com</td>
+					<td>Administrador</td>
+				</tr>
+			</table>
         </div>
     </div>
 
@@ -224,7 +236,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Apellido:</label>
-                                                        <input type="text" class="form-control" name="codigo">
+                                                        <input type="text" class="form-control" name="apellido">
                                                     </div>
                                                 </div>
                                             </div>
@@ -321,7 +333,6 @@
                             <h3 class="footer-title">Information</h3>
                             <ul class="footer-links">
                                 <li><a href="#">Acerca de Nosotros</a></li>
-                                <li><a href="#">Contáctenos</a></li>
                                 <li><a href="#">Politica de privacidad</a></li>
                             </ul>
                         </div>
@@ -333,7 +344,6 @@
                             <ul class="footer-links">
                                 <li><a href="#">Mi cuenta</a></li>
                                 <li><a href="#">Lista de Deseos</a></li>
-                                <li><a href="#">Mas Populares</a></li>
                             </ul>
                         </div>
                     </div>
@@ -398,106 +408,102 @@
                         required: true,
                         minlength: 3
                     },
-                    codigo: {
+                    apellido: {
                         required: true,
                         minlength: 3
                     },
-                    imagen: {
-                        required: true
-                    },
-                    descripcion: {
+                    documento: {
                         required: true,
-                        minlength: 10
+                        minlength: 3
                     },
-                    precio: {
+                    direccion: {
+                        required: false,
+                        minlength: 3
+                    },
+                    telefono: {
                         required: true
                     },
-                    stock: {
+                    correo: {
                         required: true
                     },
-                    marca: {
+                    rol: {
                         required: true
                     }
                 },
                 messages: {
                     nombre: {
-                        required: "Por favor ingrese el nombre del producto.",
+                        required: "Por favor ingrese el nombre del Usuario.",
                         minlength: "El nombre del producto debe tener minimo 3 caracteres"
                     },
-                    codigo: {
-                        required: "Por favor ingrese el codigo del producto.",
-                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                    apellido: {
+                        required: "Por favor ingrese el apellido del Usuario.",
+                        minlength: "El apellido debe tener minimo 3 caracteres"
                     },
-                    imagen: {
-                        required: "Por favor seleccione una imagen para el producto."
+                    documento: {
+                        required: "Por favor ingrese un documento correcto.",
+                        minlength: "EL documeto debe tener minimo 3 caracteres"
                     },
-                    descripcion: {
-                        required: "Por favor ingrese la descripcion del producto.",
-                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                    telefono: {
+                        required: "Por favor ingrese un telefono valido."
                     },
-                    precio: {
-                        required: "Por favor ingrese el precio del producto."
+                    correo: {
+						required: "Por favor ingrese un correo valido."
                     },
-                    stock: {
-                        required: "Por favor ingrese la cantidad de unidades disponibles."
-                    },
-                    marca: {
-                        required: "Por favor seleccione la marca."
+                    rol: {
+                        required: "Por favor seleccione un rol valido."
                     }
                 }
             });
 
             $("#formularioCrearProducto").validate({
                 rules: {
-                    nombre: {
+					nombre: {
                         required: true,
                         minlength: 3
                     },
-                    codigo: {
+                    apellido: {
                         required: true,
                         minlength: 3
                     },
-                    imagen: {
-                        required: true
-                    },
-                    descripcion: {
+                    documento: {
                         required: true,
-                        minlength: 10
+                        minlength: 3
                     },
-                    precio: {
+                    direccion: {
+                        required: false,
+                        minlength: 3
+                    },
+                    telefono: {
                         required: true
                     },
-                    stock: {
+                    correo: {
                         required: true
                     },
-                    marca: {
+                    rol: {
                         required: true
                     }
                 },
                 messages: {
                     nombre: {
-                        required: "Por favor ingrese el nombre del producto.",
+                        required: "Por favor ingrese el nombre del Usuario.",
                         minlength: "El nombre del producto debe tener minimo 3 caracteres"
                     },
-                    codigo: {
-                        required: "Por favor ingrese el codigo del producto.",
-                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                    apellido: {
+                        required: "Por favor ingrese el apellido del Usuario.",
+                        minlength: "El apellido debe tener minimo 3 caracteres"
                     },
-                    imagen: {
-                        required: "Por favor seleccione una imagen para el producto."
+                    documento: {
+                        required: "Por favor ingrese un documento correcto.",
+                        minlength: "EL documeto debe tener minimo 3 caracteres"
                     },
-                    descripcion: {
-                        required: "Por favor ingrese la descripcion del producto.",
-                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                    telefono: {
+                        required: "Por favor ingrese un telefono valido."
                     },
-                    precio: {
-                        required: "Por favor ingrese el precio del producto."
+                    correo: {
+						required: "Por favor ingrese un correo valido."
                     },
-                    stock: {
-                        required: "Por favor ingrese la cantidad de unidades disponibles."
-                    },
-                    marca: {
-                        required: "Por favor seleccione la marca."
+                    rol: {
+                        required: "Por favor seleccione un rol valido."
                     }
                 }
             });
