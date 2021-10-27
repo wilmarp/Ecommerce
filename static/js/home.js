@@ -212,7 +212,6 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newUsuario =
-                        '<table class="table">'+
                         '<tr>'+
                         '<th scope="col">ID</th>'+
                         '<th scope="col">Nombre</th>'+
@@ -232,8 +231,7 @@ servicios = {
                         '<td>' + data[i].telefono + '</td>'
                         '<td>' + data[i].correo + '</td>'
                         '<td>' + data[i].rol + '</td>'
-                        '</tr>'+
-                        '</table>';
+                        '</tr>';
                 }
             },
             error: function(e) {
