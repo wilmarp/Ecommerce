@@ -49,7 +49,7 @@
 					</ul>
 					<ul class="header-links pull-right">
 						<!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
-						<li><a href="#"><i class="fa fa-user-o"></i>Iniciar Sesion</a></li>
+						<li><a href="/login" id="iniciarsesion"><i class="fa fa-user-o"></i>Iniciar Sesion</a></li>
 					</ul>
 				</div>
 			</div>
@@ -171,7 +171,7 @@
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="#">Inicio</a></li>
+						<li class="active"><a href="/">Inicio</a></li>
 						<li><a href="#">Damas</a></li>
 						<li><a href="#">Caballeros</a></li>
 						<li><a href="#">Niños</a></li>
@@ -446,6 +446,12 @@
 		<script>
 			$(document).ready(function() {								
 				servicios.getListaDeseos();
+
+				if (localStorage.autenticado == 'true') {
+					$('#iniciarsesion').html("Cerrar Sesión");
+					$('#iniciarsesion').attr('href', '/logout');
+				}
+				
 			});
 		</script>
 
