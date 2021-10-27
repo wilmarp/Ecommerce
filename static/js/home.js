@@ -8,7 +8,8 @@ home = {
 urlRest = {
     urlgetproductos: home.urlbase + '/productos',
     urlconnect: home.urlbase + '/connect',
-    urlgetListaDeseos: home.urlbase + '/listadeseos/'
+    urlgetListaDeseos: home.urlbase + '/listadeseos/',
+    urlgetListaUsuarios: home.urlbase + '/adminUser'
 }
 
 servicios = {
@@ -192,6 +193,49 @@ servicios = {
             },
             error: function(e) {
 
+            },
+        });
+    },
+
+    getListaUsuarios: function() {
+        debugger
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify({ "UserRef": localStorage.userRef }),
+            url: urlRest.urlgetListaUsuarios,
+            async: true,
+            dataType: "json",
+            success: function(data) {
+                localStorage.Deseados = 0;
+                $("#list-usuarios").html("");
+                for (var i = 0; i < data.length; i++) {
+
+                    newUsuario =
+                        '<table>'+
+                        '<tr>'+
+                        '<th>ID</th>'+
+                        '<th>Nombre</th>'+
+                        '<th>Apellido</th>'+
+                        '<th>Identificacion</th>'+
+                        '<th>Dirección</th>'+
+                        '<th>Telefono</th>'+
+                        '<th>Correo</th>'+
+                        '<th>Rol</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                        '<td>' + data[i].id + '</td>'
+                        '<td>' + data[i].primer_nombre + '</td>'
+                        '<td>' + data[i].segundo_nombre + '</td>'
+                        '<td>' + data[i].no_id + '</td>'
+                        '<td>' + data[i].direccion + '</td>'
+                        '<td>' + data[i].telefono + '</td>'
+                        '<td>' + data[i].correo + '</td>'
+                        '<td>' + data[i].rol + '</td>'
+                        '</tr>'+
+                        '</table>';
+                }
+            },
+            error: function(e) {
             },
         });
     },
