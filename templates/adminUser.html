@@ -89,16 +89,16 @@
     <div class="section">
         <div class="container filtros">
             <div class="row">
-                <br>
-                <div class="col-xs-12">
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                </div>
+				<div class="col-xs-12">
+					<label for="exampleInputEmail1">Buscar Usuario</label>
+					<input type="text" class="form-control" placeholder="Digite el usuario a buscar">
+				</div>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <div class="container crear-producto" id="crear-producto" style="display:none;">
+        <div class="container crear-producto" id="crear-producto" style="">
             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formCrearProducto">Crear Usuario</button>
         </div>
         <div class="container" id="list-usuarios">
@@ -113,37 +113,7 @@
             <!-- row -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="hot-deal">
-                        <ul class="hot-deal-countdown">
-                            <li>
-                                <div>
-                                    <h3>02</h3>
-                                    <span>Dias</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <h3>10</h3>
-                                    <span>Horas</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <h3>34</h3>
-                                    <span>Minutos</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <h3>60</h3>
-                                    <span>Segundos</span>
-                                </div>
-                            </li>
-                        </ul>
-                        <h2 class="text-uppercase">Oferta Caliente esta Semana</h2>
-                        <p>Nueva colección hasta 50% de descuento</p>
-                        <a class="primary-btn cta-btn" href="#">Ver Ahora</a>
-                    </div>
+                    
                 </div>
             </div>
             <!-- /row -->
@@ -158,7 +128,7 @@
                         <div class="global-container">
                             <div class="card login-form">
                                 <div class="card-body">
-                                    <h2 class="text-center">Editar producto</h2>
+                                    <h2 class="text-center">Editar Usuario</h2>
                                     <div class="card-text">
                                         <form id="formEditarProducto" method="post">
                                             <div class="form-group">
@@ -168,7 +138,7 @@
                                                         <input type="text" class="form-control" name="nombre">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label>Código:</label>
+                                                        <label>Apellido:</label>
                                                         <input type="text" class="form-control" name="codigo">
                                                     </div>
                                                 </div>
@@ -243,7 +213,7 @@
                         <div class="global-container">
                             <div class="card login-form">
                                 <div class="card-body">
-                                    <h2 class="text-center">Crear producto</h2>
+                                    <h2 class="text-center">Crear Usuario</h2>
                                     <div class="card-text">
                                         <form id="formularioCrearProducto" method="post">
                                             <div class="form-group">
@@ -253,50 +223,40 @@
                                                         <input type="text" class="form-control" name="nombre">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label>Código:</label>
+                                                        <label>Apellido:</label>
                                                         <input type="text" class="form-control" name="codigo">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="row">
-                                                    <div class="col-md-12">
-                                                        <label>Seleccionar imagenes:</label>
-                                                        <input type="file" class="form-control" name="imagen">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <label>Descripción:</label>
-                                                        <textarea class="form-control" rows="4" name="descripcion"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="row">
                                                     <div class="col-md-6">
-                                                        <label>Precio:</label>
-                                                        <input type="text" class="form-control" name="precio">
+                                                        <label>Documento:</label>
+                                                        <input type="text" class="form-control" name="documento">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label>Stock:</label>
-                                                        <input type="number" class="form-control" name="stock">
+                                                        <label>Dirección:</label>
+                                                        <input type="text" class="form-control" name="direccion">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <label>Marca:</label>
-                                                        <select class="form-control" name="marca">
-                                                            <option>Nike</option>
-                                                            <option>Totto</option>
-                                                            <option>Rebook</option>
-                                                            <option>Americanino</option>
-                                                            <option>Puma</option>
-                                                        </select>
+                                                        <label>Telefono:</label>
+                                                        <input type="text" class="form-control" name="telefono">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Correo:</label>
+                                                        <input type="text" class="form-control" name="correo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Rol:</label>
+                                                        <input type="text" class="form-control" name="rol">
                                                     </div>
                                                 </div>
                                             </div>

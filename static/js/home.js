@@ -1,5 +1,6 @@
 home = {
-    urlbase: 'https://127.0.0.1',
+    urlbase: 'https://uninorteequipo3.pythonanywhere.com/',
+    // urlbase: 'https://127.0.0.1',
     uSuperAdmin: 1,
     uAdmin: 2,
     uCliente: 3,
