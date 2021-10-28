@@ -1,5 +1,6 @@
 home = {
-    urlbase: 'https://127.0.0.1',
+    urlbase: 'https://uninorteequipo3.pythonanywhere.com/',
+    // urlbase: 'https://127.0.0.1',
     uSuperAdmin: 1,
     uAdmin: 2,
     uCliente: 3,
@@ -8,7 +9,8 @@ home = {
 urlRest = {
     urlgetproductos: home.urlbase + '/productos',
     urlconnect: home.urlbase + '/connect',
-    urlgetListaDeseos: home.urlbase + '/listadeseos/'
+    urlgetListaDeseos: home.urlbase + '/listadeseos/',
+    urlgetListaUsuarios: home.urlbase + '/adminUser'
 }
 
 servicios = {
@@ -396,7 +398,46 @@ servicios = {
                 return false;
             }
         });
-    }
+    },
+    getListaUsuarios: function() {
+        debugger
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify({ "UserRef": localStorage.userRef }),
+            url: urlRest.urlgetListaUsuarios,
+            async: true,
+            dataType: "json",
+            success: function(data) {
+                localStorage.Deseados = 0;
+                $("#list-usuarios").html("");
+                for (var i = 0; i < data.length; i++) {
+
+                    newUsuario =
+                        '<tr>' +
+                        '<th scope="col">ID</th>' +
+                        '<th scope="col">Nombre</th>' +
+                        '<th scope="col">Apellido</th>' +
+                        '<th scope="col">Identificacion</th>' +
+                        '<th scope="col">Dirección</th>' +
+                        '<th scope="col">Telefono</th>' +
+                        '<th scope="col">Correo</th>' +
+                        '<th scope="col">Rol</th>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td scope="row">' + data[i].id + '</td>'
+                    '<td>' + data[i].primer_nombre + '</td>'
+                    '<td>' + data[i].segundo_nombre + '</td>'
+                    '<td>' + data[i].no_id + '</td>'
+                    '<td>' + data[i].direccion + '</td>'
+                    '<td>' + data[i].telefono + '</td>'
+                    '<td>' + data[i].correo + '</td>'
+                    '<td>' + data[i].rol + '</td>'
+                    '</tr>';
+                }
+            },
+            error: function(e) {},
+        });
+    },
 }
 
 home.eventElement = {

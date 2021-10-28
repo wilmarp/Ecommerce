@@ -2,6 +2,7 @@ import os, sys
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from markupsafe import escape
 #import productos
+import numpy as np
 from producto import getProducto
 from productos import getProductosList, getProductosDeseadosList
 from utils import crypto
@@ -11,8 +12,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import json
 
-con = sqlite3.connect('ecommerce.db', check_same_thread=False)
-UPLOAD_FOLDER = 'https://127.0.0.1/img'
+
+con = sqlite3.connect('/home/uninorteEquipo3/mysite/ecommerce.db', check_same_thread=False)
 
 def InsertUsuario(con, entities, rol):
     cursorObj = con.cursor()
@@ -34,11 +35,60 @@ def Login(con, usuario, contrasena):
     else:
         return "no puede ingresar"
 
+
 def obtenerUsuario(con, usuario):
     cursorObj = con.cursor()
     cursorObj.execute('SELECT id, usuario, password, primer_nombre, segundo_nombre, tipo_id, no_id, direccion, telefono, correo, id_rol FROM usuario u JOIN rol_usuario r ON u.id = r.id_usuario WHERE usuario = ?', (usuario,))
     res = cursorObj.fetchone()
     return res
+
+def getProductosImagenesDB(con, id_producto):
+    cursorObj = con.cursor()
+    sql =   'select ruta from imagen where id_producto = ? '
+    cursorObj.execute(sql,(id_producto,))
+    return cursorObj.fetchall()
+
+def getProductosDB(con, usuario = 0):
+    if "usuario_id" not in session:
+        usuario = 0
+    print("||||||||||||||||||||||||||||||||||||||"+ str(usuario))
+    cursorObj = con.cursor()
+    sql =   'select p.Id, '
+    sql +=  '   p.Codigo,'
+    sql +=  '   p.Nombre,'
+    sql +=  '   case when cm.Comentarios is null then 0 else cm.Comentarios end as Comentarios, '
+    sql +=  '   case when d.id is null then 0 else 1 end as Deseado, '
+    sql +=  '   Precio, '
+    sql +=  '   case when ca.calificacion is null then 0 else ca.Calificacion  end as Calificacion '
+    sql +=  'from producto p '
+    sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c group by id_producto) as cm on p.id = cm.id_producto '
+    sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '
+    if usuario != 0:
+        sql +=  'inner join producto_deseado d on p.id = d.id_producto '
+        sql +=  'and d.id_usuario = ?'
+        cursorObj.execute(sql,(usuario,))
+    else:
+        sql +=  'left join producto_deseado d on p.id = d.id_producto '
+        cursorObj.execute(sql)
+
+    data = list()
+    res = cursorObj.fetchall()
+    for row in res:
+        r = list(row)
+        images = getProductosImagenesDB(con, r[0])
+        r.append(images)
+        data.append(r)
+
+    print(data)
+    return jsonify(data)
+
+
+    #np.asarray(res)
+    # print(res[0][0])
+    # a = list(res[0])
+    # a.append([1,2])
+    # return jsonify(a)
+
 
 userSuperAdmin = 1
 userAdmin = 2
@@ -49,7 +99,7 @@ app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/', methods=['GET','POST'])
-def index():    
+def index():
     return render_template('index.html')
 
 @app.route('/producto', methods=['GET'])
@@ -71,44 +121,53 @@ def crearProducto():
     return 'Hola'
 
 @app.route('/lista-deseos/', methods=['GET','POST'])
-def htmlDeseos():    
+def htmlDeseos():
     return render_template('deseos.html')
 
 @app.route('/productos', methods=['GET','POST'])
 @app.route('/productos/', methods=['GET','POST'])
 def getProductos():
-    return jsonify(getProductosList())
+    res = getProductosDB(con)
+    #return jsonify(getProductosList())
+    print(session)
+    return res
 
 @app.route('/listadeseos/', methods=['GET','POST'])
-def getProductosDeseados():    
-    if( request.json["UserRef"] == crypto(session["userID"] )):
-        return jsonify(getProductosDeseadosList())    
-    else:
-       return jsonify("")
+def getProductosDeseados():
+    res = getProductosDB(con, session["usuario_id"])
+    return res
+
+def getProductoDeseado(con, producto):
+    print(session)
+    print(producto)
+    if 'usuario_id' in session:
+        cursorObj = con.cursor()
+        cursorObj.execute('select id from producto_deseado where id_producto = ? and id_usuario = ?  limit 1', (producto, session["usuario_id"]))
+        res = cursorObj.fetchone()
+        if res is not None:
+            return res[0]
+    return 0
+
 
 @app.route("/putListadeseos/", methods=["GET", "POST"])
 def putListadeseos():
+    print(type(session))
     salida = {"SUCCESS": "ERROR", "DATA": ""}
-    salida["SUCCESS"] = "OK"
+    if 'usuario_id' not in session:
+        salida["DATA"] = "Usuario no tiene una session activa"
+    else:
+        if request.method == 'POST':
+            pd = getProductoDeseado(con,request.json['ProRef'])
+            if pd != 0:
+                cursorObj = con.cursor()
+                cursorObj.execute('delete from producto_deseado where id = ?', (pd,))
+            else:
+                cursorObj = con.cursor()
+                cursorObj.execute("insert into producto_deseado (id_producto,id_usuario,fecha) values(?,?,date('now'))", (request.json['ProRef'], session["usuario_id"]))
+            con.commit()
+            salida["SUCCESS"] = "OK"
+            salida["DATA"] = "Lista Modificada"
     return jsonify(salida)
-
-@app.route('/connect', methods=['GET','POST'])
-@app.route('/connect/', methods=['GET','POST'])
-def getConnect():
-    session["tipoUser"] = userSuperAdmin
-    session["userID"] = "1"
-    data = {"tipoUser":userSuperAdmin, "ref": crypto(session["userID"])}
-    return jsonify(data)
-
-@app.route('/setUsuario/', methods=['GET','POST'])
-def setUsuario():
-    session["user"] = "jaime"
-    session["pass"] = "asdfasdfasdfasd"
-    return ""
-
-@app.route('/getUsuario/', methods=['GET','POST'])
-def getUsuario():
-    return f'{session["user"]} --> {crypto(session["user"])} y password {session["pass"]} SuperAdmin: {session["sadmin"]}'
 
 @app.route('/obtenerProducto', methods=['GET'])
 @app.route('/obtenerProducto/', methods=['GET'])
@@ -136,9 +195,10 @@ def registrarUsuario():
         usuario = request.json['usuario']
         telefono = request.json['telefono']
         contrasena = generate_password_hash(request.json['contrasena'])
-        rol = request.json['rol']
-        existeUsuario = buscarUsuario(con,usuario)
-        if existeUsuario[1]:
+        rol = 3#request.json['rol']
+        existeUsuario = buscarUsuario()
+        print(existeUsuario)
+        if existeUsuario[1] and existeUsuario != 'No existe':
             return 'Ya existe un usuario'
         else:
             if tipo_id and num_id and primer_nombre and primer_apellido and correo and direccion and usuario and telefono and contrasena and rol:
@@ -149,13 +209,18 @@ def registrarUsuario():
                 return 'Datos invalidos'
     else:
         return 'Peticion incorrecta'
-    
+
 
 
 @app.route('/login', methods=['GET'])
 @app.route('/login/', methods=['GET'])
 def login():
     return render_template('login.html')
+
+@app.route('/adminUser', methods=['POST', 'GET'])
+@app.route('/adminUser/', methods=['POST', 'GET'])
+def adminUser():
+    return render_template('adminUser.html')
 
 @app.route('/loguearUsuario', methods = ['POST', 'GET'])
 @app.route('/loguearUsuario/', methods = ['POST', 'GET'])
@@ -187,7 +252,7 @@ def logout():
 def buscarUsuario():
     if request.method == 'POST':
         usuario = request.json['usuario']
-        print(usuario)
+        print("-->"+usuario)
         if usuario:
             res = obtenerUsuario(con,usuario)
             if res:
@@ -200,14 +265,11 @@ def buscarUsuario():
 def gestionUsuario():
     return render_template('gestionUsuario.html')
 
-@app.route('/probar', methods=['GET','POST'])
-def fnProbar():    
-    if(request.method == 'POST'): 
-        txtCedula = escape( request.form['txtCedula'] )
-        txtUsuario = 'Jaime'
-        txtEmail  = 'Jaime@hotmail.com'
-        return render_template('probar.html', txtCedula=txtCedula, txtUsuario=txtUsuario, txtEmail=txtEmail)
-    return render_template('probar.html')
+# @app.before_request
+# def before_request_func():
+#     if "usuario_id" not in session:
+#         return redirect(url_for("login"))
+
 
 
 if(__name__ == '__main__'):
