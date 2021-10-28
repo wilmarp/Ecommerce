@@ -25,6 +25,10 @@
     <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="/static/css/font-awesome.min.css">
 
+    <!-- File input -->
+    <link rel="stylesheet" href="/static/kartik-v-bootstrap-fileinput/css/fileinput.min.css">
+    <link rel="stylesheet" href="/static/kartik-v-bootstrap-fileinput/css/fileinput-rtl.min.css">
+
     <!-- Custom stlylesheet -->
     <link type="text/css" rel="stylesheet" href='{{url_for("static", filename="css/style.css")}}' />
     <link type="text/css" rel="stylesheet" href='{{url_for("static", filename="css/custom.css")}}' />
@@ -350,7 +354,7 @@
                                 <div class="card-body">
                                     <h2 class="text-center">Editar producto</h2>
                                     <div class="card-text">
-                                        <form id="formEditarProducto" method="post">
+                                        <form id="formEditarProducto" method="post" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -367,7 +371,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label>Seleccionar imagenes:</label>
-                                                        <input type="file" class="form-control" name="imagen">
+                                                        <input type="file" class="form-control" id="editarImagenes" name="imagen[]" accept="image/*" multiple>
                                                     </div>
                                                 </div>
                                             </div>
@@ -435,16 +439,16 @@
                                 <div class="card-body">
                                     <h2 class="text-center">Crear producto</h2>
                                     <div class="card-text">
-                                        <form id="formularioCrearProducto" method="post">
+                                        <form id="formularioCrearProducto" method="post" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Nombre:</label>
-                                                        <input type="text" class="form-control" name="nombre">
+                                                        <input type="text" class="form-control" name="nombre" id="nombre">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Código:</label>
-                                                        <input type="text" class="form-control" name="codigo">
+                                                        <input type="text" class="form-control" name="codigo" id="codigo">
                                                     </div>
                                                 </div>
                                             </div>
@@ -452,7 +456,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label>Seleccionar imagenes:</label>
-                                                        <input type="file" class="form-control" name="imagen">
+                                                        <input type="file" class="form-control" id="crearImagenes" name="imagen[]" accept="image/*" multiple>
                                                     </div>
                                                 </div>
                                             </div>
@@ -460,7 +464,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label>Descripción:</label>
-                                                        <textarea class="form-control" rows="4" name="descripcion"></textarea>
+                                                        <textarea class="form-control" rows="4" name="descripcion" id="descripcion"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -468,11 +472,11 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Precio:</label>
-                                                        <input type="text" class="form-control" name="precio">
+                                                        <input type="text" class="form-control" name="precio" id="precio">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Stock:</label>
-                                                        <input type="number" class="form-control" name="stock">
+                                                        <input type="number" class="form-control" name="stock" id="stock">
                                                     </div>
                                                 </div>
                                             </div>
@@ -480,7 +484,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Marca:</label>
-                                                        <select class="form-control" name="marca">
+                                                        <select class="form-control" name="marca" id="marca">
                                                             <option>Nike</option>
                                                             <option>Totto</option>
                                                             <option>Rebook</option>
@@ -612,124 +616,27 @@
     <script src='{{url_for("static", filename="js/main.js")}}'></script>
     <script src='{{url_for("static", filename="js/home.js")}}'></script>
     <script src='{{url_for("static", filename="js/jquery.validate.min.js")}}'></script>
+    <script src='{{url_for("static", filename="kartik-v-bootstrap-fileinput/js/plugins/piexif.min.js")}}'></script>
+    <script src='{{url_for("static", filename="kartik-v-bootstrap-fileinput/js/plugins/sortable.min.js")}}'></script>
+    <script src='{{url_for("static", filename="kartik-v-bootstrap-fileinput/js/fileinput.min.js")}}'></script>
+    <script src='{{url_for("static", filename="kartik-v-bootstrap-fileinput/js/locales/LANG.js")}}'></script>
+    <script src='{{url_for("static", filename="kartik-v-bootstrap-fileinput/themes/fa/theme.min.js")}}'></script>
 
     <script>
         $(document).ready(function() {
             servicios.getproductos();
             servicios.getconnect();
+            servicios.validarFormProducto();
+
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
             }
 
-            $("#formEditarProducto").validate({
-                rules: {
-                    nombre: {
-                        required: true,
-                        minlength: 3
-                    },
-                    codigo: {
-                        required: true,
-                        minlength: 3
-                    },
-                    imagen: {
-                        required: true
-                    },
-                    descripcion: {
-                        required: true,
-                        minlength: 10
-                    },
-                    precio: {
-                        required: true
-                    },
-                    stock: {
-                        required: true
-                    },
-                    marca: {
-                        required: true
-                    }
-                },
-                messages: {
-                    nombre: {
-                        required: "Por favor ingrese el nombre del producto.",
-                        minlength: "El nombre del producto debe tener minimo 3 caracteres"
-                    },
-                    codigo: {
-                        required: "Por favor ingrese el codigo del producto.",
-                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
-                    },
-                    imagen: {
-                        required: "Por favor seleccione una imagen para el producto."
-                    },
-                    descripcion: {
-                        required: "Por favor ingrese la descripcion del producto.",
-                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
-                    },
-                    precio: {
-                        required: "Por favor ingrese el precio del producto."
-                    },
-                    stock: {
-                        required: "Por favor ingrese la cantidad de unidades disponibles."
-                    },
-                    marca: {
-                        required: "Por favor seleccione la marca."
-                    }
-                }
-            });
-
-            $("#formularioCrearProducto").validate({
-                rules: {
-                    nombre: {
-                        required: true,
-                        minlength: 3
-                    },
-                    codigo: {
-                        required: true,
-                        minlength: 3
-                    },
-                    imagen: {
-                        required: true
-                    },
-                    descripcion: {
-                        required: true,
-                        minlength: 10
-                    },
-                    precio: {
-                        required: true
-                    },
-                    stock: {
-                        required: true
-                    },
-                    marca: {
-                        required: true
-                    }
-                },
-                messages: {
-                    nombre: {
-                        required: "Por favor ingrese el nombre del producto.",
-                        minlength: "El nombre del producto debe tener minimo 3 caracteres"
-                    },
-                    codigo: {
-                        required: "Por favor ingrese el codigo del producto.",
-                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
-                    },
-                    imagen: {
-                        required: "Por favor seleccione una imagen para el producto."
-                    },
-                    descripcion: {
-                        required: "Por favor ingrese la descripcion del producto.",
-                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
-                    },
-                    precio: {
-                        required: "Por favor ingrese el precio del producto."
-                    },
-                    stock: {
-                        required: "Por favor ingrese la cantidad de unidades disponibles."
-                    },
-                    marca: {
-                        required: "Por favor seleccione la marca."
-                    }
-                }
+            $("#crearImagenes").fileinput({
+                allowedFileTypes: ['image'],
+                theme: 'fa',
+                showUpload: false
             });
         });
     </script>
