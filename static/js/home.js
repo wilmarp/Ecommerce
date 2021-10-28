@@ -195,6 +195,208 @@ servicios = {
             },
         });
     },
+
+    validarFormProducto: function() {
+        $("#formEditarProducto").validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                codigo: {
+                    required: true,
+                    minlength: 3
+                },
+                imagen: {
+                    required: true
+                },
+                descripcion: {
+                    required: true,
+                    minlength: 10
+                },
+                precio: {
+                    required: true
+                },
+                stock: {
+                    required: true
+                },
+                marca: {
+                    required: true
+                }
+            },
+            messages: {
+                nombre: {
+                    required: "Por favor ingrese el nombre del producto.",
+                    minlength: "El nombre del producto debe tener minimo 3 caracteres"
+                },
+                codigo: {
+                    required: "Por favor ingrese el codigo del producto.",
+                    minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                },
+                imagen: {
+                    required: "Por favor seleccione una imagen para el producto."
+                },
+                descripcion: {
+                    required: "Por favor ingrese la descripcion del producto.",
+                    minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                },
+                precio: {
+                    required: "Por favor ingrese el precio del producto."
+                },
+                stock: {
+                    required: "Por favor ingrese la cantidad de unidades disponibles."
+                },
+                marca: {
+                    required: "Por favor seleccione la marca."
+                }
+            },
+            submitHandler: function(form) {
+                // do other things for a valid form
+                event.preventDefault();
+                var tipo_id = $("#tipo_id").val();
+                var num_id = $('#num_id').val();
+                var primer_nombre = $('#primer_nombre').val();
+                var segundo_nombre = $('#segundo_nombre').val();
+                var primer_apellido = $('#primer_apellido').val();
+                var segundo_apellido = $('#segundo_apellido').val();
+                var correo = $('#correo').val();
+                var direccion = $('#direccion').val();
+                var usuario = $('#usuario').val();
+                var telefono = $('#telefono').val();
+                var contrasena = $('#contrasena').val();
+                var request = $.ajax({
+                    url: "../registrarUsuario/",
+                    method: "POST",
+                    data: JSON.stringify({
+                        tipo_id: tipo_id,
+                        num_id: num_id,
+                        primer_nombre: primer_nombre,
+                        segundo_nombre: segundo_nombre,
+                        primer_apellido: primer_apellido,
+                        segundo_apellido: segundo_apellido,
+                        correo: correo,
+                        direccion: direccion,
+                        usuario: usuario,
+                        telefono: telefono,
+                        contrasena: contrasena,
+                        rol: 3
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                request.done(function(res) {
+                    if (res == 'Ya existe un usuario') {
+                        alert('Ya existe un usuario con ese nombre');
+                    } else if (res == 'Registro Exitoso') {
+                        window.location.replace("/");
+                    } else if (res == 'Datos invalidos') {
+                        alert('Los datos no se enviaron correctamente, intentelo de nuevo');
+                    } else {
+                        alert('Se realizó una petición incorrecta')
+                    }
+                });
+
+                request.fail(function(jqXHR, textStatus) {
+                    console.log(jqXHR);
+                });
+            }
+        });
+
+        $("#formularioCrearProducto").validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                codigo: {
+                    required: true,
+                    minlength: 3
+                },
+                imagen: {
+                    required: true,
+                    accept: "image/*",
+                    filesize: 2097152
+                },
+                descripcion: {
+                    required: true,
+                    minlength: 10
+                },
+                precio: {
+                    required: true
+                },
+                stock: {
+                    required: true
+                },
+                marca: {
+                    required: true
+                }
+            },
+            messages: {
+                nombre: {
+                    required: "Por favor ingrese el nombre del producto.",
+                    minlength: "El nombre del producto debe tener minimo 3 caracteres"
+                },
+                codigo: {
+                    required: "Por favor ingrese el codigo del producto.",
+                    minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                },
+                imagen: {
+                    required: "Por favor seleccione una imagen para el producto.",
+                    accept: "El archivo debe ser una imagen.",
+                    filesize: "El archivo debe pesar menos de 2MB."
+                },
+                descripcion: {
+                    required: "Por favor ingrese la descripcion del producto.",
+                    minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                },
+                precio: {
+                    required: "Por favor ingrese el precio del producto."
+                },
+                stock: {
+                    required: "Por favor ingrese la cantidad de unidades disponibles."
+                },
+                marca: {
+                    required: "Por favor seleccione la marca."
+                }
+            },
+            submitHandler: function(form) {
+                // do other things for a valid form
+                event.preventDefault();
+                formData = new FormData($('#formularioCrearProducto')[0]);
+                var request = $.ajax({
+                    url: "../crearProducto/",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    header: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                request.done(function(res) {
+                    console.log(res);
+                    if (res == 'Ya existe un usuario') {
+                        alert('Ya existe un usuario con ese nombre');
+                    } else if (res == 'Registro Exitoso') {
+                        window.location.replace("/");
+                    } else if (res == 'Datos invalidos') {
+                        alert('Los datos no se enviaron correctamente, intentelo de nuevo');
+                    } else {
+                        alert('Se realizó una petición incorrecta')
+                    }
+                });
+
+                request.fail(function(jqXHR, textStatus) {
+                    console.log(jqXHR);
+                });
+                return false;
+            }
+        });
+    }
 }
 
 home.eventElement = {

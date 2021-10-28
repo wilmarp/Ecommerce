@@ -1,4 +1,4 @@
-import os
+import os, sys
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from markupsafe import escape
 #import productos
@@ -8,8 +8,11 @@ from utils import crypto
 import sqlite3
 from hashlib import sha512
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import json
 
 con = sqlite3.connect('ecommerce.db', check_same_thread=False)
+UPLOAD_FOLDER = 'https://127.0.0.1/img'
 
 def InsertUsuario(con, entities, rol):
     cursorObj = con.cursor()
@@ -43,6 +46,7 @@ userCliente = 3
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/', methods=['GET','POST'])
 def index():    
@@ -52,6 +56,19 @@ def index():
 @app.route('/producto/', methods=['GET'])
 def producto():
     return render_template('product.html')
+
+@app.route('/crearProducto', methods=['GET','POST'])
+@app.route('/crearProducto/', methods=['GET','POST'])
+def crearProducto():
+    if request.method == 'POST':
+        imagenes = request.files.getlist('imagen[]')
+        for i in range(len(imagenes)):
+            imagen = imagenes[i]
+            filename = secure_filename(imagen.filename)
+            imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data = request.form.getlist()
+        print(data)
+    return 'Hola'
 
 @app.route('/lista-deseos/', methods=['GET','POST'])
 def htmlDeseos():    
