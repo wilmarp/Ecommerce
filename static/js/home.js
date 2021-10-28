@@ -414,25 +414,14 @@ servicios = {
 
                     newUsuario =
                         '<tr>' +
-                        '<th scope="col">ID</th>' +
-                        '<th scope="col">Nombre</th>' +
-                        '<th scope="col">Apellido</th>' +
-                        '<th scope="col">Identificacion</th>' +
-                        '<th scope="col">Dirección</th>' +
-                        '<th scope="col">Telefono</th>' +
-                        '<th scope="col">Correo</th>' +
-                        '<th scope="col">Rol</th>' +
-                        '</tr>' +
-                        '<tr>' +
                         '<td scope="row">' + data[i].id + '</td>'
-                    '<td>' + data[i].primer_nombre + '</td>'
-                    '<td>' + data[i].segundo_nombre + '</td>'
-                    '<td>' + data[i].no_id + '</td>'
-                    '<td>' + data[i].direccion + '</td>'
-                    '<td>' + data[i].telefono + '</td>'
-                    '<td>' + data[i].correo + '</td>'
-                    '<td>' + data[i].rol + '</td>'
-                    '</tr>';
+                        '<td>' + data[i].primer_nombre + '</td>'
+                        '<td>' + data[i].segundo_nombre + '</td>'
+                        '<td>' + data[i].no_id + '</td>'
+                        '<td>' + data[i].rol + '</td>'
+                        '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>' +
+                        '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminaUsuarior">Eliminar</button></td>' +
+                        '</tr>';
                 }
             },
             error: function(e) {},
