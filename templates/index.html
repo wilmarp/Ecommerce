@@ -181,10 +181,9 @@
                     <li><a href="#">Damas</a></li>
                     <li><a href="#">Caballeros</a></li>
                     <li><a href="#">Niños</a></li>
-                    <li><a href="#">Contactenos</a></li>
                     <li><a href="/login" id="login">Iniciar Sesión</a></li>
                     <li><a href="/registro" id="registro">Registrese</a></li>
-                    <li><a href="/adminUser" id="adminUser" hidden>Administrar Usuarios</a></li>
+                    <li><a href="/adminUser" id="adminUser" style="visibility: hidden;">Administrar Usuarios</a></li>
                 </ul>
                 <!-- /NAV -->
             </div>
@@ -632,9 +631,9 @@
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
-                $('#admin').style.visibility = "hidden";
-                $('#registro').style.visibility = "hidden";
-                $('#adminUser').removeAttribute("hidden");
+                $('#admin').hide();
+                $('#registro').hide();
+                $('#adminUser').show();
             }
 
             $("#crearImagenes").fileinput({

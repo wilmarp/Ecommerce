@@ -84,6 +84,27 @@
         <!-- /MAIN HEADER -->
     </header>
     <!-- /HEADER -->
+	<!-- NAVIGATION -->
+	<nav id="navigation">
+		<!-- container -->
+		<div class="container">
+			<!-- responsive-nav -->
+			<div id="responsive-nav">
+				<!-- NAV -->
+				<ul class="main-nav nav navbar-nav">
+					<li class="active"><a href="/">Inicio</a></li>
+					<li><a href="#">Damas</a></li>
+					<li><a href="#">Caballeros</a></li>
+					<li><a href="#">Niños</a></li>
+					<li><a href="/adminUser" id="adminUser">Administrar Usuarios</a></li>
+				</ul>
+				<!-- /NAV -->
+			</div>
+			<!-- /responsive-nav -->
+		</div>
+		<!-- /container -->
+	</nav>
+	<!-- /NAVIGATION -->
 
 
     <div class="section">
@@ -405,11 +426,13 @@
 
     <script>
         $(document).ready(function() {
-            servicios.getproductos();
             servicios.getconnect();
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
+                $('#admin').hide();
+                $('#registro').hide();
+                $('#adminUser').show();
             }
 
             $("#formEditarProducto").validate({
