@@ -12,8 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import json
 
-
-con = sqlite3.connect('/home/uninorteEquipo3/mysite/ecommerce.db', check_same_thread=False)
+con = sqlite3.connect('ecommerce.db', check_same_thread=False)
 
 def InsertUsuario(con, entities, rol):
     cursorObj = con.cursor()
@@ -34,7 +33,6 @@ def Login(con, usuario, contrasena):
         return "puede ingresar"
     else:
         return "no puede ingresar"
-
 
 def obtenerUsuario(con, usuario):
     cursorObj = con.cursor()
@@ -89,6 +87,43 @@ def getProductosDB(con, usuario = 0):
     # a.append([1,2])
     # return jsonify(a)
 
+def getProductoDB(con, producto_id, usuario = 0):
+    if "usuario_id" not in session:
+        usuario = 0
+    print("||||||||||||||||||||||||||||||||||||||"+ str(usuario))
+    cursorObj = con.cursor()
+    sql =   'select p.Id, '
+    sql +=  '   p.Codigo,'
+    sql +=  '   p.Nombre,'
+    sql +=  '   case when cm.Comentarios is null then 0 else cm.Comentarios end as Comentarios, '
+    sql +=  '   case when d.id is null then 0 else 1 end as Deseado, '
+    sql +=  '   Precio, Descripcion, Stock, Color, Marca,'
+    sql +=  '   case when ca.calificacion is null then 0 else ca.Calificacion  end as Calificacion '
+    #sql +=  '   Descripcion'
+    sql +=  'from producto p '
+    sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c group by id_producto) as cm on p.id = cm.id_producto '
+    sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '
+    if usuario != 0:
+        sql +=  'inner join producto_deseado d on p.id = d.id_producto '
+        sql +=  'and d.id_usuario = ?'
+        sql += 'where p.id = ?'
+        cursorObj.execute(sql,(usuario,producto_id,))
+    else:
+        sql +=  'left join producto_deseado d on p.id = d.id_producto '
+        sql += 'where p.id = ?'
+        cursorObj.execute(sql,(producto_id,))
+
+    data = list()
+    res = cursorObj.fetchall()
+    for row in res:
+        r = list(row)
+        images = getProductosImagenesDB(con, r[0])
+        r.append(images)
+        data.append(r)
+
+    print(data)
+    return jsonify(data)
+
 
 userSuperAdmin = 1
 userAdmin = 2
@@ -96,15 +131,14 @@ userCliente = 3
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = ''
 
 @app.route('/', methods=['GET','POST'])
 def index():
     return render_template('index.html')
 
-@app.route('/producto', methods=['GET'])
-@app.route('/producto/', methods=['GET'])
-def producto():
+@app.route('/producto/<id>', methods=['GET'])
+def producto(id):
     return render_template('product.html')
 
 @app.route('/crearProducto', methods=['GET','POST'])
@@ -169,11 +203,10 @@ def putListadeseos():
             salida["DATA"] = "Lista Modificada"
     return jsonify(salida)
 
-@app.route('/obtenerProducto', methods=['GET'])
-@app.route('/obtenerProducto/', methods=['GET'])
-def obtenerProducto():
-    print("Entra")
-    return jsonify(getProducto());
+@app.route('/obtenerProducto/<id>', methods=['GET'])
+def obtenerProducto(id):
+    res = getProductoDB(con, id)
+    return res
 
 @app.route('/registro', methods=['GET'])
 @app.route('/registro/', methods=['GET'])
