@@ -3,12 +3,20 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from markupsafe import escape
 #import productos
 import numpy as np
+from werkzeug.wrappers.response import Response
 from producto import getProducto
 from productos import getProductosList, getProductosDeseadosList
 from utils import crypto
 import sqlite3
 from hashlib import sha512
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
 
 
 con = sqlite3.connect('ecommerce.db', check_same_thread=False)
@@ -46,9 +54,13 @@ def getProductosImagenesDB(con, id_producto):
     cursorObj.execute(sql,(id_producto,))
     return cursorObj.fetchall()
 
-def getProductosDB(con, usuario = 0):    
+def getProductosDB(con, formdeseo = 0):    
     if "usuario_id" not in session:
         usuario = 0
+    else:
+        usuario = session["usuario_id"]
+
+    print("UsuarioID: "+str(usuario))
     cursorObj = con.cursor()
     sql =   'select p.Id, '
     sql +=  '   p.Codigo,' 
@@ -59,13 +71,15 @@ def getProductosDB(con, usuario = 0):
     sql +=  '   case when ca.calificacion is null then 0 else ca.Calificacion  end as Calificacion '    
     sql +=  'from producto p '
     sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c group by id_producto) as cm on p.id = cm.id_producto '
-    sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '    
-    sql +=  'left join producto_deseado d on p.id = d.id_producto '
-    if usuario != 0:
-        sql +=  'and d.id_usuario = ?'
-        cursorObj.execute(sql,(usuario,))
+    sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '        
+    if formdeseo != 0:
+        sql +=  'inner join producto_deseado d on p.id = d.id_producto '                
     else:
-        cursorObj.execute(sql)
+        sql +=  'left join producto_deseado d on p.id = d.id_producto '
+    
+    sql +=  'and d.id_usuario = ? '
+    cursorObj.execute(sql,(usuario,))
+    #cursorObj.execute(sql)
 
     data = list()
     res = cursorObj.fetchall()
@@ -74,8 +88,6 @@ def getProductosDB(con, usuario = 0):
         images = getProductosImagenesDB(con, r[0])
         r.append(images)
         data.append(r)        
-
-    print(data)
     return jsonify(data)
 
     
@@ -109,21 +121,43 @@ def htmlDeseos():
 @app.route('/productos', methods=['GET','POST'])
 @app.route('/productos/', methods=['GET','POST'])
 def getProductos():
-    res = getProductosDB(con)
+    res = getProductosDB(con)    
     #return jsonify(getProductosList())
     return res
 
 @app.route('/listadeseos/', methods=['GET','POST'])
 def getProductosDeseados():    
-    if( request.json["UserRef"] == crypto(session["userID"] )):
-        return jsonify(getProductosDeseadosList())    
-    else:
-       return jsonify("")
+    res = getProductosDB(con, formdeseo = 1)   
+    return res    
+
+
+def getProductoDeseado(con, producto):
+    if 'usuario_id' in session:
+        cursorObj = con.cursor()                                                                                 
+        cursorObj.execute('select id from producto_deseado where id_producto = ? and id_usuario = ?  limit 1', (producto, session["usuario_id"]))
+        res = cursorObj.fetchone()
+        if res is not None:
+            return res[0]
+    return 0
+        
 
 @app.route("/putListadeseos/", methods=["GET", "POST"])
 def putListadeseos():
     salida = {"SUCCESS": "ERROR", "DATA": ""}
-    salida["SUCCESS"] = "OK"
+    if 'usuario_id' not in session:        
+        salida["DATA"] = "Usuario no tiene una session activa"
+    else:
+        if request.method == 'POST':
+            pd = getProductoDeseado(con,request.json['ProRef'])
+            if pd != 0:
+                cursorObj = con.cursor()
+                cursorObj.execute('delete from producto_deseado where id = ?', (pd,))            
+            else:
+                cursorObj = con.cursor()
+                cursorObj.execute("insert into producto_deseado (id_producto,id_usuario,fecha) values(?,?,date('now'))", (request.json['ProRef'], session["usuario_id"]))
+            con.commit()
+            salida["SUCCESS"] = "OK"
+            salida["DATA"] = "Lista Modificada"            
     return jsonify(salida)
 
 @app.route('/obtenerProducto', methods=['GET'])
@@ -152,9 +186,10 @@ def registrarUsuario():
         usuario = request.json['usuario']
         telefono = request.json['telefono']
         contrasena = generate_password_hash(request.json['contrasena'])
-        rol = request.json['rol']
-        existeUsuario = buscarUsuario(con,usuario)
-        if existeUsuario[1]:
+        rol = 3#request.json['rol']
+        existeUsuario = buscarUsuario()
+        print(existeUsuario)
+        if existeUsuario[1] and existeUsuario != 'No existe':
             return 'Ya existe un usuario'
         else:
             if tipo_id and num_id and primer_nombre and primer_apellido and correo and direccion and usuario and telefono and contrasena and rol:
@@ -178,7 +213,7 @@ def login():
 def loguearUsuario():
     if request.method == 'POST':
         usuario = request.json['usuario']
-        clave = request.json['clave']
+        clave = request.json['clave']    
         if usuario and clave:
             res = Login(con,usuario,clave)
             if res == 'puede ingresar':
@@ -203,7 +238,6 @@ def logout():
 def buscarUsuario():
     if request.method == 'POST':
         usuario = request.json['usuario']
-        print(usuario)
         if usuario:
             res = obtenerUsuario(con,usuario)
             if res:
@@ -216,6 +250,97 @@ def buscarUsuario():
 def gestionUsuario():
     return render_template('gestionUsuario.html')
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/uploadajax', methods=['POST'])
+def upldfile():
+    salida = {"SUCCESS": "ERROR", "DATA": ""}
+    if request.method == 'POST':
+
+        # if 'usuario_id' not in session:        
+        #     salida["DATA"] = "Usuario no tiene una session activa"
+        #     return jsonify(salida)
+       
+        # print(session['rol'])
+
+        # if session['rol'] not in (1,2):        
+        #     salida["DATA"] = "Usuario sin permiso para realizar esta acción"
+        #     return jsonify(salida)
+
+        try:
+            nombre = request.form["txtnombre"]
+            codigo = request.form["txtcodigo"]
+            descripcion = request.form["txtdescripcion"]
+            precio = request.form["txtprecio"]
+            stock = request.form["txtstock"]
+            marca = request.form["cbmarca"]
+            
+            cursorObj = con.cursor()
+            cursorObj.execute("insert into producto(Codigo,Nombre,Descripcion,Precio,Stock,Marca,Estado) values(?,?,?,?,?,?,?)",
+            (codigo, nombre, descripcion, precio, stock, marca, 1))
+            id_prod = cursorObj.lastrowid
+
+
+            #print(request.form["id"])
+            files = request.files.getlist('imagen[]')
+            
+            for file in files:
+                print(file)
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    #app.logger.info('FileName: ' + filename)
+                    updir = 'static/img/'#os.path.join('/static/', 'img/')
+                    rutafile = os.path.join(updir, filename)
+                    file.save(rutafile)
+                    file_size = os.path.getsize(os.path.join(updir, filename))
+
+                    cursorObj.execute("insert into imagen(id_producto,ruta,estado) values(?,?,1)",
+                    (id_prod, "/"+rutafile))
+
+            con.commit()
+            salida["SUCCESS"] = "OK"
+            salida["DATA"] = "id_producto"
+
+
+            return jsonify(salida)
+
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+
+            salida["DATA"] = "Se presento un error interno, vuelva a intentarlo"
+            return jsonify(salida)
+
+    salida["DATA"] = "Se presento un error con la conexión"
+    return jsonify(salida)
+
+
+
+        #files = request.files['imagen']
+        # print(type(files))
+        # if files and allowed_file(files.filename):
+        #     filename = secure_filename(files.filename)
+        #     #app.logger.info('FileName: ' + filename)
+        #     updir = 'static/img/'#os.path.join('/static/', 'img/')
+        #     files.save(os.path.join(updir, filename))
+        #     file_size = os.path.getsize(os.path.join(updir, filename))
+        #     #return jsonify(name=filename, size=file_size)
+        #     return jsonify(path=os.path.join(updir, filename))
+
+
+
+
+# @app.before_request
+# def before_request_func():
+#     if "usuario_id" not in session:        
+#         return redirect(url_for("login"))
+#     return Response
+
 
 if(__name__ == '__main__'):
     app.run(debug=True, port=443, ssl_context=('micertificado.pem', 'llaveprivada.pem'))
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

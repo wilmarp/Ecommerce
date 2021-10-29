@@ -288,7 +288,7 @@
     </div>
 
     <div class="section">
-        <div class="container crear-producto" id="crear-producto" style="display:none;">
+        <div class="container crear-producto" id="crear-producto" style="display:block;">
             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formCrearProducto">Crear Producto</button>
         </div>
         <div class="container" id="list-productos">
@@ -366,6 +366,7 @@
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
+                                                        <div id="resto_form"></div>
                                                         <label>Seleccionar imagenes:</label>
                                                         <input type="file" class="form-control" name="imagen">
                                                     </div>
@@ -435,16 +436,16 @@
                                 <div class="card-body">
                                     <h2 class="text-center">Crear producto</h2>
                                     <div class="card-text">
-                                        <form id="formularioCrearProducto" method="post">
+                                        <form id="formularioCrearProducto" data-id="0" method="post" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Nombre:</label>
-                                                        <input type="text" class="form-control" name="nombre">
+                                                        <input type="text" class="form-control" name="txtnombre" id="txtnombre">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Código:</label>
-                                                        <input type="text" class="form-control" name="codigo">
+                                                        <input type="text" class="form-control" name="txtcodigo" id="txtcodigo">
                                                     </div>
                                                 </div>
                                             </div>
@@ -452,7 +453,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label>Seleccionar imagenes:</label>
-                                                        <input type="file" class="form-control" name="imagen">
+                                                        <input type="file" class="form-control" id="crearImagenes" name="imagen[]" accept="image/*" multiple>
                                                     </div>
                                                 </div>
                                             </div>
@@ -460,7 +461,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label>Descripción:</label>
-                                                        <textarea class="form-control" rows="4" name="descripcion"></textarea>
+                                                        <textarea class="form-control" rows="4" name="txtdescripcion" id="txtdescripcion"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -468,11 +469,11 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Precio:</label>
-                                                        <input type="text" class="form-control" name="precio">
+                                                        <input type="text" class="form-control" name="txtprecio" id="txtprecio">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Stock:</label>
-                                                        <input type="number" class="form-control" name="stock">
+                                                        <input type="number" class="form-control" name="txtstock" id="txtstock">
                                                     </div>
                                                 </div>
                                             </div>
@@ -480,7 +481,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label>Marca:</label>
-                                                        <select class="form-control" name="marca">
+                                                        <select class="form-control" name="cbmarca" id="cbmarca">
                                                             <option>Nike</option>
                                                             <option>Totto</option>
                                                             <option>Rebook</option>
@@ -494,7 +495,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                                        <button type="submit" id="btnGuardarProducto" class="btn btn-primary">Guardar</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -617,6 +618,58 @@
         $(document).ready(function() {
             servicios.getproductos();
             servicios.getconnect();
+
+
+
+            $('#btnGuardarProducto').click(function() {
+
+                event.preventDefault();
+                
+                var form_data = new FormData(document.getElementById("formularioCrearProducto"));
+                //form_data.append("id", $("formularioCrearProducto").data().id);
+                $.ajax({
+                    type: 'POST',
+                    url: '/uploadajax',
+                    data: form_data,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json'
+                }).done(function(data, textStatus, jqXHR){
+
+                    debugger
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                    console.log('Success!');
+                    $("#result_path").text(data['path']);
+                }).fail(function(data){
+
+                    alert('error!');
+                });
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
