@@ -84,6 +84,27 @@
         <!-- /MAIN HEADER -->
     </header>
     <!-- /HEADER -->
+	<!-- NAVIGATION -->
+	<nav id="navigation">
+		<!-- container -->
+		<div class="container">
+			<!-- responsive-nav -->
+			<div id="responsive-nav">
+				<!-- NAV -->
+				<ul class="main-nav nav navbar-nav">
+					<li class="active"><a href="/">Inicio</a></li>
+					<li><a href="#">Damas</a></li>
+					<li><a href="#">Caballeros</a></li>
+					<li><a href="#">Niños</a></li>
+					<li><a href="/adminUser" id="adminUser">Administrar Usuarios</a></li>
+				</ul>
+				<!-- /NAV -->
+			</div>
+			<!-- /responsive-nav -->
+		</div>
+		<!-- /container -->
+	</nav>
+	<!-- /NAVIGATION -->
 
 
     <div class="section">
@@ -103,16 +124,36 @@
         </div>
         <div class="container" id="list-usuarios">
 			<table class="table">
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Nombre</th>
+					<th scope="col">Apellido</th>
+					<th scope="col">Identificacion</th>
+					<th scope="col">Rol</th>
+					<th scope="col">Acciones</th>
+				</tr>
             <!-- row -->
 				<tr>
 					<td scope="row">00</td>
 					<td>Usuario prueba</td>
 					<td>Quemado</td>
-					<td>103844848</td>
-					<td>Cra 21 No.22 22</td>
-					<td>334 44334</td>
-					<td>otro@gmai.com</td>
+					<td>103844848</td>					
 					<td>Administrador</td>
+					<td>
+						<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminarUsuario">Eliminar</button>
+					</td>
+				</tr>
+				<tr>
+					<td scope="row">01</td>
+					<td>Edison</td>
+					<td>Osorio</td>
+					<td>103844848</td>					
+					<td>Cliente</td>
+					<td>
+						<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminarUsuario">Eliminar</button>
+					</td>
 				</tr>
 			</table>
         </div>
@@ -130,7 +171,7 @@
             </div>
             <!-- /row -->
         </div>
-        <div id="formEditar" class="modal fade" role="dialog">
+        <div id="formEditarUsuario" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -142,7 +183,7 @@
                                 <div class="card-body">
                                     <h2 class="text-center">Editar Usuario</h2>
                                     <div class="card-text">
-                                        <form id="formEditarProducto" method="post">
+                                        <form id="formularioCrearProducto" method="post">
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -151,49 +192,39 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label>Apellido:</label>
-                                                        <input type="text" class="form-control" name="codigo">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <label>Seleccionar imagenes:</label>
-                                                        <input type="file" class="form-control" name="imagen">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <label>Descripción:</label>
-                                                        <textarea class="form-control" rows="4" name="descripcion"></textarea>
+                                                        <input type="text" class="form-control" name="apellido">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <label>Precio:</label>
-                                                        <input type="text" class="form-control" name="precio">
+                                                        <label>Documento:</label>
+                                                        <input type="text" class="form-control" name="documento">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label>Stock:</label>
-                                                        <input type="text" class="form-control" name="stock">
+                                                        <label>Dirección:</label>
+                                                        <input type="text" class="form-control" name="direccion">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <label>Marca:</label>
-                                                        <select class="form-control" name="marca">
-                                                            <option>Nike</option>
-                                                            <option>Totto</option>
-                                                            <option>Rebook</option>
-                                                            <option>Americanino</option>
-                                                            <option>Puma</option>
-                                                        </select>
+                                                        <label>Telefono:</label>
+                                                        <input type="text" class="form-control" name="telefono">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Correo:</label>
+                                                        <input type="text" class="form-control" name="correo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Rol:</label>
+                                                        <input type="text" class="form-control" name="rol">
                                                     </div>
                                                 </div>
                                             </div>
@@ -395,11 +426,13 @@
 
     <script>
         $(document).ready(function() {
-            servicios.getproductos();
             servicios.getconnect();
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
+                $('#admin').hide();
+                $('#registro').hide();
+                $('#adminUser').show();
             }
 
             $("#formEditarProducto").validate({

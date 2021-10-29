@@ -215,7 +215,17 @@ servicios = {
             },
             error: function(e) {
 
-            },
+                newUsuario =
+                    '<tr>' +
+                    '<td scope="row">' + data[i].id + '</td>'
+                '<td>' + data[i].primer_nombre + '</td>'
+                '<td>' + data[i].segundo_nombre + '</td>'
+                '<td>' + data[i].no_id + '</td>'
+                '<td>' + data[i].rol + '</td>'
+                '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>' +
+                '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminaUsuarior">Eliminar</button></td>' +
+                '</tr>';
+            }
         });
     },
 }

@@ -181,9 +181,9 @@
                     <li><a href="#">Damas</a></li>
                     <li><a href="#">Caballeros</a></li>
                     <li><a href="#">Niños</a></li>
-                    <li><a href="#">Contactenos</a></li>
-                    <li><a href="/login">Iniciar Sesión</a></li>
-                    <li><a href="/registro">Registrese</a></li>
+                    <li><a href="/login" id="login">Iniciar Sesión</a></li>
+                    <li><a href="/registro" id="registro">Registrese</a></li>
+                    <li><a href="/adminUser" id="adminUser" style="visibility: hidden;">Administrar Usuarios</a></li>
                 </ul>
                 <!-- /NAV -->
             </div>
@@ -630,12 +630,124 @@
             if (localStorage.autenticado == 'true') {
                 $('#iniciarsesion').html("Cerrar Sesión");
                 $('#iniciarsesion').attr('href', '/logout');
+                $('#admin').hide();
+                $('#registro').hide();
+                $('#adminUser').show();
             }
 
             $("#crearImagenes").fileinput({
                 allowedFileTypes: ['image'],
                 theme: 'fa',
                 showUpload: false
+            });
+            $("#formEditarProducto").validate({
+                rules: {
+                    nombre: {
+                        required: true,
+                        minlength: 3
+                    },
+                    codigo: {
+                        required: true,
+                        minlength: 3
+                    },
+                    imagen: {
+                        required: true
+                    },
+                    descripcion: {
+                        required: true,
+                        minlength: 10
+                    },
+                    precio: {
+                        required: true
+                    },
+                    stock: {
+                        required: true
+                    },
+                    marca: {
+                        required: true
+                    }
+                },
+                messages: {
+                    nombre: {
+                        required: "Por favor ingrese el nombre del producto.",
+                        minlength: "El nombre del producto debe tener minimo 3 caracteres"
+                    },
+                    codigo: {
+                        required: "Por favor ingrese el codigo del producto.",
+                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                    },
+                    imagen: {
+                        required: "Por favor seleccione una imagen para el producto."
+                    },
+                    descripcion: {
+                        required: "Por favor ingrese la descripcion del producto.",
+                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                    },
+                    precio: {
+                        required: "Por favor ingrese el precio del producto."
+                    },
+                    stock: {
+                        required: "Por favor ingrese la cantidad de unidades disponibles."
+                    },
+                    marca: {
+                        required: "Por favor seleccione la marca."
+                    }
+                }
+            });
+
+            $("#formularioCrearProducto").validate({
+                rules: {
+                    nombre: {
+                        required: true,
+                        minlength: 3
+                    },
+                    codigo: {
+                        required: true,
+                        minlength: 3
+                    },
+                    imagen: {
+                        required: true
+                    },
+                    descripcion: {
+                        required: true,
+                        minlength: 10
+                    },
+                    precio: {
+                        required: true
+                    },
+                    stock: {
+                        required: true
+                    },
+                    marca: {
+                        required: true
+                    }
+                },
+                messages: {
+                    nombre: {
+                        required: "Por favor ingrese el nombre del producto.",
+                        minlength: "El nombre del producto debe tener minimo 3 caracteres"
+                    },
+                    codigo: {
+                        required: "Por favor ingrese el codigo del producto.",
+                        minlength: "El codigo del producto debe tener minimo 3 caracteres"
+                    },
+                    imagen: {
+                        required: "Por favor seleccione una imagen para el producto."
+                    },
+                    descripcion: {
+                        required: "Por favor ingrese la descripcion del producto.",
+                        minlength: "La descripción del producto debe tener minimo 10 caracteres"
+                    },
+                    precio: {
+                        required: "Por favor ingrese el precio del producto."
+                    },
+                    stock: {
+                        required: "Por favor ingrese la cantidad de unidades disponibles."
+                    },
+                    marca: {
+                        required: "Por favor seleccione la marca."
+                    }
+                }
             });
         });
     </script>
