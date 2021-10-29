@@ -2,7 +2,6 @@ import os, sys
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from markupsafe import escape
 #import productos
-import numpy as np
 from productos import getProductosList, getProductosDeseadosList
 from utils import crypto
 import sqlite3
@@ -10,8 +9,8 @@ from hashlib import sha512
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import json
-from datetime import date
 import datos
+from datetime import date
 
 con = sqlite3.connect('ecommerce.db', check_same_thread=False)
 
@@ -87,6 +86,17 @@ def getProductoDeseado(con, producto):
     if 'usuario_id' in session:
         cursorObj = con.cursor()
         cursorObj.execute('select id from producto_deseado where id_producto = ? and id_usuario = ?  limit 1', (producto, session["usuario_id"]))
+        res = cursorObj.fetchone()
+        if res is not None:
+            return res[0]
+    return 0
+
+def getProductoGenero(con, genero):
+    print(session)
+    print(producto)
+    if 'usuario_id' in session:
+        cursorObj = con.cursor()
+        cursorObj.execute('select id from producto_deseado where genero = ? and id_usuario = ?  limit 1', (genero, session["usuario_id"]))
         res = cursorObj.fetchone()
         if res is not None:
             return res[0]
