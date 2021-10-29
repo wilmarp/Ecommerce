@@ -39,8 +39,7 @@
                     <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
                 </ul>
                 <ul class="header-links pull-right">
-                    <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                    <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+                    <li><a href="/login" id="iniciarsesion"><i class="fa fa-user-o"></i>Iniciar Sesion</a></li>
                 </ul>
             </div>
         </div>
@@ -235,11 +234,11 @@
                         <p class="product-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 
                         <div class="product-options">
-                            <label>
+                            <!-- <label>
 								Talla
 								<select class="input-select" id="select-talla">
 								</select>
-							</label>
+							</label> -->
                             <label>
 								Color
 								<select class="input-select" id="select-color">
@@ -442,7 +441,7 @@
         $(document).ready(function() {
 
             var request = $.ajax({
-                url: "../obtenerProducto/",
+                url: "../obtenerProducto/" + window.location.pathname.split("/").pop(),
                 method: "GET",
                 dataType: "json",
                 headers: {
@@ -452,31 +451,34 @@
 
             request.done(function(res) {
                 res = res[0];
-                $('.product-name').text(res.nombre);
-                $('.product-price').text('$' + res.precio);
-                $('.product-available').text(res.stock + ' Disponible(s)');
-                $('.product-description').text(res.descripcion);
-                $('#select-talla').append('<option value="' + res.talla + '">' + res.talla + '</option>');
-                $('#select-color').append('<option value="' + res.color + '">' + res.color + '</option>');
-                $('#num_comentarios').text('Comentarios (' + res.comentarios.length + ')');
-                for (let i = 0; i < res.calificacion; i++) {
+                console.log(res);
+                $('.product-name').text(res[2]);
+                $('.product-price').text('$' + res[5]);
+                $('.product-available').text(res[7] + ' Disponible(s)');
+                $('.product-description').text(res[6]);
+                //$('#select-talla').append('<option value="' + res[10] + '">' + res[10] + '</option>');
+                $('#select-color').append('<option value="' + res[8] + '">' + res[8] + '</option>');
+                $('#num_comentarios').text('Comentarios (' + res[3] + ')');
+                for (let i = 0; i < res[10]; i++) {
                     $('.product-rating').append('<i class="fa fa-star"></i>');
                 }
-                for (let i = 0; i < 5 - res.calificacion; i++) {
+                for (let i = 0; i < 5 - res[10]; i++) {
                     $('.product-rating').append('<i class="fa fa-star-o"></i>');
                 }
-                for (let i = 0; i < res.imagenes.length; i++) {
-                    const imagen = res.imagenes[i].imagen;
-                    $('#product-main-img').append('<div class="product-preview"><img src="../static/img/' + imagen + '" alt=""></div>');
-                    $('#product-imgs').append('<div class="product-preview"><img src="../static/img/' + imagen + '" alt=""></div>');
+                for (let i = 0; i < res[11].length; i++) {
+                    const imagen = res[11][i];
+                    $('#product-main-img').append('<div class="product-preview"><img src="..' + imagen + '" alt=""></div>');
+                    $('#product-imgs').append('<div class="product-preview"><img src="..' + imagen + '" alt=""></div>');
                 }
-                for (let i = 0; i < res.comentarios.length; i++) {
-                    const comentario = res.comentarios[i];
-                    if (i == 0) {
-                        $('.reviews').append('<li id="delete"><div class="review-heading"><img class="img" src="../static/img/' + comentario.imagen + '" alt=""><h5 class ="name"> ' + comentario.nombre + ' </h5><p class="date"> ' + comentario.fecha + ' </p></div> <div class="review-body"><div class="text-right"> <a href ="#" class="editar" id="editar" data-toggle="modal" data-target="#comentarioModal"> Editar </a> | <a href="#" class="eliminar" id="eliminar">Eliminar</a> </div> <p id="texto">' + comentario.comentario + '</p> </div> </li>');
-                    } else {
-                        $('.reviews').append('<li><div class="review-heading"><img class="img" src="../static/img/' + comentario.imagen + '" alt=""><h5 class="name"> ' + comentario.nombre + ' </h5><p class="date"> ' + comentario.fecha + ' </p> </div> <div class="review-body"> <p>' + comentario.comentario + '</p> </div> </li>');
+                for (let i = 0; i < res[12].length; i++) {
+                    const comentario = res[12][i];
+                    html = '<li id="delete"><div class="review-heading"><img class="img" src="../static/img/user.png" alt=""><h5 class ="name"> ' + comentario[0] + ' ' + comentario[1] + ' </h5><p class="date"> ' + comentario[3] + ' </p></div> <div class="review-body">';
+                    console.log(comentario[4]);
+                    if (comentario[4] == 1) {
+                        html += '<div class="text-right"> <a href ="#" class="editar" id="editar" data-toggle="modal" data-target="#comentarioModal"> Editar </a> | <a href="#" class="eliminar" id="eliminar">Eliminar</a> </div> ';
                     }
+                    html += ' <p id="texto">' + comentario[2] + '</p> </div> </li>';
+                    $('.reviews').append(html);
                 }
 
                 // Product Main img Slick
@@ -531,16 +533,60 @@
                     //Comentar
                     $('#Comentar').on('click', function(e) {
                         e.preventDefault();
-                        if ($('#Comentar').text() == 'Comentar') {
-                            $('.reviews').append('<li><div class="review-heading"><img class="img" src="../static/img/user.png" alt=""><h5 class="name">Jaime</h5><p class="date">10 OCT 2021, 7:00 AM</p></div><div class="review-body"><p>' + $('#comentario').val() + '</p></div></li>');
-                            $('#comentarioModal').modal('hide');
 
+                        producto_id = window.location.pathname.split("/").pop();
+                        usuario = localStorage.tUser;
+                        descripcion = $('#comentario').val();
+
+                        if (usuario) {
+                            var request = $.ajax({
+                                url: "../comentarProducto/",
+                                method: "POST",
+                                data: JSON.stringify({
+                                    usuario: usuario,
+                                    producto_id: producto_id,
+                                    descripcion: descripcion
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            request.done(function(res) {
+                                if (res[0]) {
+                                    var d = new Date();
+                                    var month = d.getMonth() + 1;
+                                    var day = d.getDate();
+                                    var today = d.getFullYear() + '-' +
+                                        (month < 10 ? '0' : '') + month + '-' +
+                                        (day < 10 ? '0' : '') + day;
+                                    if ($('#Comentar').text() == 'Comentar') {
+                                        $('.reviews').append('<li><div class="review-heading"><img class="img" src="../static/img/user.png" alt=""><h5 class="name">' + res[3] + ' ' + res[4] + '</h5><p class="date">' + today + '</p></div><div class="review-body"><p>' + $('#comentario').val() + '</p></div></li>');
+                                        $('#comentarioModal').modal('hide');
+
+                                    } else {
+                                        $('#texto').text($('#comentario').val());
+                                        $('#comentarioModal').modal('hide');
+                                        $('#comentario').val('');
+                                        $('#Comentar').text('Comentar');
+                                    }
+                                } else if (res == 'datos') {
+                                    alert('Datos invalidos');
+                                } else if (res == 'login') {
+                                    alert('Debe estar logueado para realizar un comentario');
+                                    window.location.replace("/login");
+                                } else {
+                                    alert('Esta realizando mal la petición');
+                                }
+
+                            });
+
+                            request.fail(function(jqXHR, textStatus) {
+                                console.log('Fail');
+                            });
                         } else {
-                            $('#texto').text($('#comentario').val());
-                            $('#comentarioModal').modal('hide');
-                            $('#comentario').val('');
-                            $('#Comentar').text('Comentar');
-
+                            alert('Debe estar logueado para realizar un comentario');
+                            window.location.replace("/login");
                         }
                     });
 
@@ -552,6 +598,11 @@
                     });
                 }
             });
+
+            if (localStorage.autenticado == 'true') {
+                $('#iniciarsesion').html("Cerrar Sesión");
+                $('#iniciarsesion').attr('href', '/logout');
+            }
         });
     </script>
 

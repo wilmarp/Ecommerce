@@ -1,6 +1,6 @@
 home = {
-    urlbase: 'https://uninorteequipo3.pythonanywhere.com/',
-    // urlbase: 'https://127.0.0.1',
+    //urlbase: 'https://uninorteequipo3.pythonanywhere.com/', 
+    urlbase: 'https://127.0.0.1',
     uSuperAdmin: 1,
     uAdmin: 2,
     uCliente: 3,
@@ -10,10 +10,33 @@ urlRest = {
     urlgetproductos: home.urlbase + '/productos',
     urlconnect: home.urlbase + '/connect',
     urlgetListaDeseos: home.urlbase + '/listadeseos/',
-    urlgetListaUsuarios: home.urlbase + '/adminUser'
+    urlputListaDeseos: home.urlbase + '/putListadeseos/'
 }
 
 servicios = {
+
+    putListadeseos: function(pref, current) {
+
+        $.ajax({
+            data: JSON.stringify({ "ProRef": pref }),
+            url: urlRest.urlputListaDeseos,
+            type: "POST",
+            async: true,
+            dataType: "json",
+            contentType: 'application/json',
+            success: function(data) {
+                if (data.SUCCESS == "OK") {
+                    $("i", current).toggleClass("heart-on");
+                    $("span", current).html($("i", current).hasClass("heart-on") ? "Quitar de la lista de deseos " : "Agregar a la lista de deseos ");
+                    $(".qty").html($(".heart-on").toArray().length);
+                }
+            },
+            error: function(e) {
+
+            },
+        });
+
+    },
 
     getproductos: function() {
         localStorage.Deseados = 0;
@@ -28,21 +51,16 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newProducto =
-                        '<a href="/producto"><div id="carousel-example-generic' + i + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
-                        '   <div style="height:60px;"><h4>' + data[i].Nombre + '</h4></div>' +
-                        '   <span class="heart">Agregar a la lista de deseos' +
-                        '   <i class="' + (data[i].Deseado == "true" ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
-                        '   <ol class="carousel-indicators">' +
-                        '       <li data-target="#carousel-example-generic' + i + '" data-slide-to="0" class="active"></li>' +
-                        '       <li data-target="#carousel-example-generic' + i + '" data-slide-to="1"></li>' +
-                        '       <li data-target="#carousel-example-generic' + i + '" data-slide-to="2"></li>' +
-                        '	</ol>' +
+                        '<a href="/producto/' + data[i][1] + '"><div id="carousel-example-generic' + i + '" data-ref="' + data[i][0] + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
+                        '   <div style="height:60px;"><h4>' + data[i][2] + '</h4></div>' +
+                        '	<span class="heart"><span class="label-deseos">' + (data[i][4] == 1 ? "Quitar de " : "Agregar a ") + 'la lista de deseos</span>' +
+                        '   <i class="' + (data[i][4] == 1 ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
                         '   <div class="carousel-inner" role="listbox">';
 
-                    for (var j = 0; j < data[i].Imagenes.length; j++) {
+                    for (var j = 0; j < data[i][7].length; j++) {
 
                         newProducto += '<div class="item ' + (j == 0 ? "active" : "") + '">' +
-                            '    <img src="' + data[i].Imagenes[j] + '" alt="...">' +
+                            '    <img src="' + data[i][7][j][0] + '" alt="...">' +
                             '    <div class="carousel-caption"></div>' +
                             '</div>';
                     }
@@ -60,19 +78,19 @@ servicios = {
                         '   <form>' +
                         '       <p class="clasificacion">' +
                         '           <input id="radio1" type="radio" name="estrellas" value="5">' +
-                        '           <label for="radio1">★</label>' +
+                        '           <label for="radio1" class="' + (data[i][6] >= 5 ? "votado" : "") + '">★</label>' +
                         '           <input id="radio2" type="radio" name="estrellas" value="4">' +
-                        '           <label for="radio2">★</label>' +
+                        '           <label for="radio2" class="' + (data[i][6] >= 4 ? "votado" : "") + '">★</label>' +
                         '           <input id="radio3" type="radio" name="estrellas" value="3">' +
-                        '           <label for="radio3" class="votado">★</label>' +
+                        '           <label for="radio3" class="' + (data[i][6] >= 3 ? "votado" : "") + '">★</label>' +
                         '           <input id="radio4" type="radio" name="estrellas" value="2">' +
-                        '           <label for="radio4" class="votado">★</label>' +
+                        '           <label for="radio4" class="' + (data[i][6] >= 2 ? "votado" : "") + '">★</label>' +
                         '           <input id="radio5" type="radio" name="estrellas" value="1">' +
-                        '           <label for="radio5" class="votado">★</label>' +
+                        '           <label for="radio5" class="' + (data[i][6] >= 1 ? "votado" : "") + '">★</label>' +
                         '       </p>' +
                         '   </form>' +
-                        '   <span class="s-precio">$ ' + data[i].Precio + '</span>' +
-                        '   <a href="#" class="s-producto-comentarios">' + data[i].Comentarios + ' comentarios</a>' +
+                        '   <span class="s-precio">$ ' + parseFloat(data[i][5]).toLocaleString(window.document.documentElement.lang) + '</span>' +
+                        '   <a href="#" class="s-producto-comentarios">' + data[i][4] + ' comentarios</a>' +
                         '   <div class="btn-del-edit-prod">' +
                         '       <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditar">Editar</button>' +
                         '       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminar">Eliminar</button>' +
@@ -80,13 +98,13 @@ servicios = {
                         '</div></a>';
 
                     $("#list-productos").append(newProducto);
-                    if (data[i].Deseado == "true")
+                    if (data[i][4] == 1)
                         localStorage.Deseados = parseInt(localStorage.Deseados) + 1;
 
                     $('#carousel-example-generic' + i + ' .heart').on("click", function(e) {
                         event.preventDefault();
-                        // agregar o quitar de la lista de deseos 
-                        $("i", this).toggleClass("heart-on");
+                        // agregar o quitar de la lista de deseos                                                
+                        servicios.putListadeseos($(this).parent().parent().data().ref, this)
                         $(".qty").html($(".heart-on").toArray().length);
                     })
                 }
@@ -120,10 +138,9 @@ servicios = {
     getListaDeseos: function() {
         debugger
         $.ajax({
-            type: "POST",
-            data: JSON.stringify({ "UserRef": localStorage.userRef }),
-            url: urlRest.urlgetListaDeseos,
+            type: "GET",
             async: true,
+            url: urlRest.urlgetListaDeseos,
             dataType: "json",
             success: function(data) {
                 localStorage.Deseados = 0;
@@ -131,23 +148,18 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newProducto =
-                        '       <div id="carousel-example-generic' + i + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
-                        '		<div style="height:60px;"><h4>' + data[i].Nombre + '</h4></div>' +
-                        '		<span>Agregar a la lista de deseos</span>' +
-                        '		<a href="" class="heart ' + (data[i].Deseado == "true" ? 'heart-on' : '') + ' fa fa-heart"></a>' +
-                        '		<ol class="carousel-indicators">' +
-                        '			<li data-target="#carousel-example-generic' + i + '" data-slide-to="0" class="active"></li>' +
-                        '			<li data-target="#carousel-example-generic' + i + '" data-slide-to="1"></li>' +
-                        '			<li data-target="#carousel-example-generic' + i + '" data-slide-to="2"></li>' +
-                        '		</ol>' +
+                        '<a href="/producto"><div id="carousel-example-generic' + i + '" data-ref="' + data[i][0] + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
+                        '		<div style="height:60px;"><h4>' + data[i][2] + '</h4></div>' +
+                        '		<span class="heart"><span class="label-deseos">' + (data[i][4] == 1 ? "Quitar de " : "Agregar a ") + 'la lista de deseos</span>' +
+                        '       <i class="' + (data[i][4] == 1 ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
                         '		    <div class="carousel-inner" role="listbox">';
 
-                    for (var j = 0; j < data[i].Imagenes.length; j++) {
+                    for (var j = 0; j < data[i][7].length; j++) {
 
-                        newProducto += '			    <div class="item ' + (j == 0 ? "active" : "") + '">' +
-                            '			        <img src="' + data[i].Imagenes[j] + '" alt="...">' +
-                            '			        <div class="carousel-caption"></div>' +
-                            '			    </div>';
+                        newProducto += '<div class="item ' + (j == 0 ? "active" : "") + '">' +
+                            '    <img src="' + data[i][7][j][0] + '" alt="...">' +
+                            '    <div class="carousel-caption"></div>' +
+                            '</div>';
                     }
 
                     newProducto +=
@@ -163,21 +175,21 @@ servicios = {
                         '			<span class="sr-only">Next</span>' +
                         '    	</a>' +
                         '		<form>' +
-                        '			<p class="clasificacion">' +
-                        '			  <input id="radio1" type="radio" name="estrellas" value="5">' +
-                        '			  <label for="radio1">★</label>' +
-                        '			  <input id="radio2" type="radio" name="estrellas" value="4">' +
-                        '			  <label for="radio2">★</label>' +
-                        '			  <input id="radio3" type="radio" name="estrellas" value="3">' +
-                        '			  <label for="radio3" class="votado">★</label>' +
-                        '			  <input id="radio4" type="radio" name="estrellas" value="2">' +
-                        '			  <label for="radio4" class="votado">★</label>' +
-                        '			  <input id="radio5" type="radio" name="estrellas" value="1">' +
-                        '			  <label for="radio5" class="votado">★</label>' +
-                        '			</p>' +
+                        '           <p class="clasificacion">' +
+                        '               <input id="radio1" type="radio" name="estrellas" value="5">' +
+                        '               <label for="radio1" class="' + (data[i][6] >= 5 ? "votado" : "") + '">★</label>' +
+                        '               <input id="radio2" type="radio" name="estrellas" value="4">' +
+                        '               <label for="radio2" class="' + (data[i][6] >= 4 ? "votado" : "") + '">★</label>' +
+                        '               <input id="radio3" type="radio" name="estrellas" value="3">' +
+                        '               <label for="radio3" class="' + (data[i][6] >= 3 ? "votado" : "") + '">★</label>' +
+                        '               <input id="radio4" type="radio" name="estrellas" value="2">' +
+                        '               <label for="radio4" class="' + (data[i][6] >= 2 ? "votado" : "") + '">★</label>' +
+                        '               <input id="radio5" type="radio" name="estrellas" value="1">' +
+                        '               <label for="radio5" class="' + (data[i][6] >= 1 ? "votado" : "") + '">★</label>' +
+                        '           </p>' +
                         '		  </form>' +
-                        '		<span class="s-precio">$ ' + data[i].Precio + '</span>' +
-                        '		<a href="#" class="s-producto-comentarios">' + data[i].Comentarios + ' comentarios</a>' +
+                        '         <span class="s-precio">$ ' + parseFloat(data[i][5]).toLocaleString(window.document.documentElement.lang) + '</span>' +
+                        '         <a href="#" class="s-producto-comentarios">' + data[i][4] + ' comentarios</a>' +
                         '       <div class="btn-del-edit-prod">' +
                         '       <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditar">Editar</button>' +
                         '       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminar">Eliminar</button>' +
@@ -185,8 +197,17 @@ servicios = {
                         '	</div>';
 
                     $("#list-productos").append(newProducto);
-                    if (data[i].Deseado == "true")
+                    if (data[i][4] == 1)
                         localStorage.Deseados = parseInt(localStorage.Deseados) + 1;
+
+                    $('#carousel-example-generic' + i + ' .heart').on("click", function(e) {
+                        event.preventDefault();
+                        debugger
+                        // agregar o quitar de la lista de deseos                                                
+                        servicios.putListadeseos($(this).parent().parent().data().ref, this)
+                        $(".qty").html($(".heart-on").toArray().length);
+
+                    })
 
                 }
                 $(".qty").html(localStorage.Deseados);
@@ -194,237 +215,17 @@ servicios = {
             },
             error: function(e) {
 
-            },
-        });
-    },
-
-    validarFormProducto: function() {
-        $("#formEditarProducto").validate({
-            rules: {
-                nombre: {
-                    required: true,
-                    minlength: 3
-                },
-                codigo: {
-                    required: true,
-                    minlength: 3
-                },
-                imagen: {
-                    required: true
-                },
-                descripcion: {
-                    required: true,
-                    minlength: 10
-                },
-                precio: {
-                    required: true
-                },
-                stock: {
-                    required: true
-                },
-                marca: {
-                    required: true
-                }
-            },
-            messages: {
-                nombre: {
-                    required: "Por favor ingrese el nombre del producto.",
-                    minlength: "El nombre del producto debe tener minimo 3 caracteres"
-                },
-                codigo: {
-                    required: "Por favor ingrese el codigo del producto.",
-                    minlength: "El codigo del producto debe tener minimo 3 caracteres"
-                },
-                imagen: {
-                    required: "Por favor seleccione una imagen para el producto."
-                },
-                descripcion: {
-                    required: "Por favor ingrese la descripcion del producto.",
-                    minlength: "La descripción del producto debe tener minimo 10 caracteres"
-                },
-                precio: {
-                    required: "Por favor ingrese el precio del producto."
-                },
-                stock: {
-                    required: "Por favor ingrese la cantidad de unidades disponibles."
-                },
-                marca: {
-                    required: "Por favor seleccione la marca."
-                }
-            },
-            submitHandler: function(form) {
-                // do other things for a valid form
-                event.preventDefault();
-                var tipo_id = $("#tipo_id").val();
-                var num_id = $('#num_id').val();
-                var primer_nombre = $('#primer_nombre').val();
-                var segundo_nombre = $('#segundo_nombre').val();
-                var primer_apellido = $('#primer_apellido').val();
-                var segundo_apellido = $('#segundo_apellido').val();
-                var correo = $('#correo').val();
-                var direccion = $('#direccion').val();
-                var usuario = $('#usuario').val();
-                var telefono = $('#telefono').val();
-                var contrasena = $('#contrasena').val();
-                var request = $.ajax({
-                    url: "../registrarUsuario/",
-                    method: "POST",
-                    data: JSON.stringify({
-                        tipo_id: tipo_id,
-                        num_id: num_id,
-                        primer_nombre: primer_nombre,
-                        segundo_nombre: segundo_nombre,
-                        primer_apellido: primer_apellido,
-                        segundo_apellido: segundo_apellido,
-                        correo: correo,
-                        direccion: direccion,
-                        usuario: usuario,
-                        telefono: telefono,
-                        contrasena: contrasena,
-                        rol: 3
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                request.done(function(res) {
-                    if (res == 'Ya existe un usuario') {
-                        alert('Ya existe un usuario con ese nombre');
-                    } else if (res == 'Registro Exitoso') {
-                        window.location.replace("/");
-                    } else if (res == 'Datos invalidos') {
-                        alert('Los datos no se enviaron correctamente, intentelo de nuevo');
-                    } else {
-                        alert('Se realizó una petición incorrecta')
-                    }
-                });
-
-                request.fail(function(jqXHR, textStatus) {
-                    console.log(jqXHR);
-                });
+                newUsuario =
+                    '<tr>' +
+                    '<td scope="row">' + data[i].id + '</td>'
+                '<td>' + data[i].primer_nombre + '</td>'
+                '<td>' + data[i].segundo_nombre + '</td>'
+                '<td>' + data[i].no_id + '</td>'
+                '<td>' + data[i].rol + '</td>'
+                '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>' +
+                '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminaUsuarior">Eliminar</button></td>' +
+                '</tr>';
             }
-        });
-
-        $("#formularioCrearProducto").validate({
-            rules: {
-                nombre: {
-                    required: true,
-                    minlength: 3
-                },
-                codigo: {
-                    required: true,
-                    minlength: 3
-                },
-                imagen: {
-                    required: true,
-                    accept: "image/*",
-                    filesize: 2097152
-                },
-                descripcion: {
-                    required: true,
-                    minlength: 10
-                },
-                precio: {
-                    required: true
-                },
-                stock: {
-                    required: true
-                },
-                marca: {
-                    required: true
-                }
-            },
-            messages: {
-                nombre: {
-                    required: "Por favor ingrese el nombre del producto.",
-                    minlength: "El nombre del producto debe tener minimo 3 caracteres"
-                },
-                codigo: {
-                    required: "Por favor ingrese el codigo del producto.",
-                    minlength: "El codigo del producto debe tener minimo 3 caracteres"
-                },
-                imagen: {
-                    required: "Por favor seleccione una imagen para el producto.",
-                    accept: "El archivo debe ser una imagen.",
-                    filesize: "El archivo debe pesar menos de 2MB."
-                },
-                descripcion: {
-                    required: "Por favor ingrese la descripcion del producto.",
-                    minlength: "La descripción del producto debe tener minimo 10 caracteres"
-                },
-                precio: {
-                    required: "Por favor ingrese el precio del producto."
-                },
-                stock: {
-                    required: "Por favor ingrese la cantidad de unidades disponibles."
-                },
-                marca: {
-                    required: "Por favor seleccione la marca."
-                }
-            },
-            submitHandler: function(form) {
-                // do other things for a valid form
-                event.preventDefault();
-                formData = new FormData($('#formularioCrearProducto')[0]);
-                var request = $.ajax({
-                    url: "../crearProducto/",
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    header: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                request.done(function(res) {
-                    console.log(res);
-                    if (res == 'Ya existe un usuario') {
-                        alert('Ya existe un usuario con ese nombre');
-                    } else if (res == 'Registro Exitoso') {
-                        window.location.replace("/");
-                    } else if (res == 'Datos invalidos') {
-                        alert('Los datos no se enviaron correctamente, intentelo de nuevo');
-                    } else {
-                        alert('Se realizó una petición incorrecta')
-                    }
-                });
-
-                request.fail(function(jqXHR, textStatus) {
-                    console.log(jqXHR);
-                });
-                return false;
-            }
-        });
-    },
-    getListaUsuarios: function() {
-        debugger
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify({ "UserRef": localStorage.userRef }),
-            url: urlRest.urlgetListaUsuarios,
-            async: true,
-            dataType: "json",
-            success: function(data) {
-                localStorage.Deseados = 0;
-                $("#list-usuarios").html("");
-                for (var i = 0; i < data.length; i++) {
-
-                    newUsuario =
-                        '<tr>' +
-                        '<td scope="row">' + data[i].id + '</td>'
-                        '<td>' + data[i].primer_nombre + '</td>'
-                        '<td>' + data[i].segundo_nombre + '</td>'
-                        '<td>' + data[i].no_id + '</td>'
-                        '<td>' + data[i].rol + '</td>'
-                        '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#formEditarUsuario">Editar</button>' +
-                        '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#formEliminaUsuarior">Eliminar</button></td>' +
-                        '</tr>';
-                }
-            },
-            error: function(e) {},
         });
     },
 }
