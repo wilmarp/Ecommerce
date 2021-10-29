@@ -48,9 +48,9 @@ def obtenerUsuarioByID(id_usuario):
 
 def getProductosComentariosDB(id_usuario, id_producto):
     cursorObj = con.cursor()
-    sql =  'select u.primer_nombre, u.segundo_nombre, c.descripcion, c.fecha,'
+    sql =  'select u.primer_nombre, u.segundo_nombre, c.descripcion, c.fecha, c.id,'
     sql += 'case when c.id_usuario = ? then 1 else 0 end as UsuarioComentario '
-    sql += 'from comentario as c join usuario as u on c.id_usuario = u.id where id_producto = ? '
+    sql += 'from comentario as c join usuario as u on c.id_usuario = u.id where c.estado = 1 and id_producto = ? '
     cursorObj.execute(sql,(id_usuario,id_producto))
     return cursorObj.fetchall()
 
@@ -114,17 +114,11 @@ def getProductoDB(producto_id, usuario = 0):
     sql +=  '   Precio, Descripcion, Stock, Color, Marca,'
     sql +=  '   case when ca.calificacion is null then 0 else ca.Calificacion  end as Calificacion '
     sql +=  'from producto p '
-    sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c group by id_producto) as cm on p.id = cm.id_producto '
+    sql +=  'left join (select c.id_producto, count(*) as Comentarios from comentario c where c.estado = 1 group by id_producto) as cm on p.id = cm.id_producto '
     sql +=  'left join (select ca.id_producto, cast(avg(ca.calificacion) as integer) as calificacion from calificacion ca group by id_producto) as ca on p.id = ca.id_producto '
-    if usuario != 0:
-        sql +=  'inner join producto_deseado d on p.id = d.id_producto '
-        sql +=  'and d.id_usuario = ?'
-        sql += 'where p.id = ?'
-        cursorObj.execute(sql,(usuario,producto_id,))
-    else:
-        sql +=  'left join producto_deseado d on p.id = d.id_producto '
-        sql += 'where p.id = ?'
-        cursorObj.execute(sql,(producto_id,))
+    sql +=  'left join producto_deseado d on p.id = d.id_producto '
+    sql += 'where p.id = ?'
+    cursorObj.execute(sql,(producto_id,))
 
     data = list()
     res = cursorObj.fetchall()
@@ -142,4 +136,14 @@ def getProductoDB(producto_id, usuario = 0):
 def InsertComentario(entities):
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO comentario(id_producto, id_usuario, descripcion, fecha, estado) VALUES(?, ?, ?, ?, ?)', entities)
+    con.commit()
+
+def UpdateComentario(id, comentario):
+    cursorObj = con.cursor()
+    cursorObj.execute('UPDATE comentario SET descripcion = ? WHERE id = ?', (comentario,id))
+    con.commit()
+
+def DeleteComentario(id):
+    cursorObj = con.cursor()
+    cursorObj.execute('UPDATE comentario SET estado = 0 WHERE id = ?', (id,))
     con.commit()

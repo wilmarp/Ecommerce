@@ -115,8 +115,39 @@ def putListadeseos():
 
 @app.route('/obtenerProducto/<id>', methods=['GET'])
 def obtenerProducto(id):
-    res = datos.getProductoDB(id)
+    if 'usuario_id' in session:
+        usuario = session['usuario_id']
+        res = datos.getProductoDB(id,usuario)
+    else:
+        res = datos.getProductoDB(id)
     return res
+
+@app.route('/editarComentario', methods=['GET' , 'POST'])
+@app.route('/editarComentario/', methods=['GET' , 'POST'])
+def editarComentario():
+    if request.method == 'POST':
+        id = request.json['id']
+        descripcion = request.json['descripcion']
+        if id and descripcion:
+            datos.UpdateComentario(id,descripcion)
+            return 'ok'
+        else:
+            return 'datos'
+    else: 
+        return 'peticion'
+
+@app.route('/eliminarComentario', methods=['GET' , 'POST'])
+@app.route('/eliminarComentario/', methods=['GET' , 'POST'])
+def eliminarComentario():
+    if request.method == 'POST':
+        id = request.json['id']
+        if id:
+            datos.DeleteComentario(id)
+            return 'ok'
+        else:
+            return 'datos'
+    else: 
+        return 'peticion'
 
 @app.route('/registro', methods=['GET'])
 @app.route('/registro/', methods=['GET'])

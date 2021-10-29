@@ -51,7 +51,7 @@ servicios = {
                 for (var i = 0; i < data.length; i++) {
 
                     newProducto =
-                        '<a href="/producto/' + data[i][1] + '"><div id="carousel-example-generic' + i + '" data-ref="' + data[i][0] + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
+                        '<a href="/producto/' + data[i][0] + '"><div id="carousel-example-generic' + i + '" data-ref="' + data[i][0] + '" class="carousel slide col-md-2" data-ride="carousel" data-interval="false">' +
                         '   <div style="height:60px;"><h4>' + data[i][2] + '</h4></div>' +
                         '	<span class="heart"><span class="label-deseos">' + (data[i][4] == 1 ? "Quitar de " : "Agregar a ") + 'la lista de deseos</span>' +
                         '   <i class="' + (data[i][4] == 1 ? 'heart-on' : '') + ' fa fa-heart"></i></span>' +
